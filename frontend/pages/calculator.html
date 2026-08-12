@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calculator | CloudCalc Pro</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 18px;
+            top: 18px;
+            bottom: 18px;
+            width: 245px;
+            z-index: 100;
+
+            display: flex;
+            flex-direction: column;
+            padding: 22px 15px;
+
+            border: 1px solid rgba(95,160,255,.22);
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(15,28,58,.92),
+                    rgba(5,12,28,.96)
+                );
+
+            box-shadow:
+                0 30px 70px rgba(0,0,0,.45),
+                inset 0 1px 0 rgba(255,255,255,.06);
+
+            backdrop-filter: blur(20px);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 4px 8px 25px;
+            border-bottom: 1px solid rgba(100,140,200,.10);
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: linear-gradient(145deg,#3182ff,#6145ed);
+            box-shadow: 0 10px 25px rgba(49,130,255,.28);
+            font-size: 19px;
+            font-weight: 900;
+        }
+
+        .brand-name {
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .brand-name span {
+            color: var(--cyan);
+        }
+
+        .nav-section {
+            margin-top: 25px;
+        }
+
+        .nav-title {
+            padding: 0 10px 9px;
+            color: #536582;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.3px;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 44px;
+            padding: 0 12px;
+            border: 1px solid transparent;
+            border-radius: 11px;
+            color: var(--text-soft);
+            font-size: 12px;
+            text-decoration: none;
+            transition: .25s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(49,130,255,.07);
+            border-color: rgba(95,160,255,.12);
+            transform: translateX(3px);
+        }
+
+        .nav-link.active {
+            color: white;
+            background: linear-gradient(
+                90deg,
+                rgba(49,130,255,.17),
+                rgba(96,72,237,.08)
+            );
+            border-color: rgba(95,160,255,.22);
+            box-shadow: inset 3px 0 0 var(--blue);
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: rgba(100,140,200,.07);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .user-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(100,140,200,.12);
+            border-radius: 12px;
+            background: rgba(100,140,200,.035);
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: linear-gradient(145deg,#3182ff,#6548ed);
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .user-info {
+            min-width: 0;
+        }
+
+        .user-name,
+        .user-email {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-name {
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .user-email {
+            color: #647696;
+            font-size: 9px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            height: 38px;
+            border: 1px solid rgba(255,90,110,.12);
+            border-radius: 10px;
+            background: rgba(255,70,90,.035);
+            color: #c77b89;
+            cursor: pointer;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main-content {
+            min-height: 100vh;
+            margin-left: 281px;
+            padding: 30px 32px 50px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .topbar-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .page-heading h1 {
+            margin: 0 0 5px;
+            font-size: 30px;
+        }
+
+        .page-heading p {
+            margin: 0;
+            color: var(--text-soft);
+            font-size: 12px;
+        }
+
+        .mobile-menu {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(100,140,200,.18);
+            border-radius: 10px;
+            background: rgba(15,28,58,.7);
+            color: white;
+            cursor: pointer;
+        }
+
+        /* ================= CALCULATOR ================= */
+
+        .calculator-wrapper {
+            max-width: 700px;
+            margin: 20px auto;
+        }
+
+        .calculator-card {
+            padding: 24px;
+            border: 1px solid rgba(95,160,255,.20);
+            border-radius: 25px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(16,31,63,.88),
+                    rgba(5,12,28,.96)
+                );
+
+            box-shadow:
+                0 30px 70px rgba(0,0,0,.35),
+                inset 0 1px 0 rgba(255,255,255,.05);
+        }
+
+        .display {
+            width: 100%;
+            min-height: 115px;
+
+            padding: 20px;
+
+            margin-bottom: 18px;
+
+            border: 1px solid rgba(95,160,255,.18);
+            border-radius: 17px;
+
+            background: rgba(2,8,20,.85);
+
+            text-align: right;
+
+            overflow: hidden;
+        }
+
+        .expression {
+            min-height: 28px;
+
+            color: #7083a3;
+            font-size: 14px;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .result {
+            margin-top: 8px;
+
+            color: white;
+
+            font-size: 34px;
+            font-weight: 800;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .calc-btn {
+            min-height: 60px;
+
+            border: 1px solid rgba(100,140,200,.13);
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(28,48,83,.75),
+                    rgba(9,20,40,.9)
+                );
+
+            color: #dce7f7;
+
+            font-size: 17px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 8px 18px rgba(0,0,0,.22);
+
+            transition: .18s ease;
+        }
+
+        .calc-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(95,160,255,.35);
+        }
+
+        .calc-btn:active {
+            transform: translateY(1px) scale(.98);
+        }
+
+        .operator {
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(49,130,255,.25),
+                    rgba(80,60,190,.18)
+                );
+            color: #78c9ff;
+        }
+
+        .clear {
+            color: #ff8798;
+        }
+
+        .equals {
+            background:
+                linear-gradient(
+                    135deg,
+                    #3182ff,
+                    #6048ed
+                );
+
+            color: white;
+
+            box-shadow:
+                0 12px 30px rgba(49,130,255,.25);
+        }
+
+        .zero {
+            grid-column: span 2;
+        }
+
+        .calculator-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 14px;
+
+            color: #536582;
+            font-size: 9px;
+        }
+
+        .toast {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            z-index: 999;
+
+            padding: 13px 18px;
+
+            border: 1px solid rgba(95,160,255,.20);
+            border-radius: 12px;
+
+            background: rgba(9,20,42,.96);
+
+            color: white;
+            font-size: 11px;
+
+            opacity: 0;
+            transform: translateY(30px);
+
+            pointer-events: none;
+
+            transition: .25s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width:850px) {
+
+            .sidebar {
+                transform: translateX(-120%);
+                transition: transform .3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 22px 18px 35px;
+            }
+
+            .mobile-menu {
+                display: grid;
+                place-items: center;
+            }
+
+        }
+
+        @media (max-width:600px) {
+
+            .calculator-card {
+                padding: 15px;
+            }
+
+            .calc-btn {
+                min-height: 52px;
+                font-size: 15px;
+            }
+
+            .result {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="background-grid"></div>
+
+<div class="glow glow-blue"></div>
+<div class="glow glow-purple"></div>
+<div class="glow glow-cyan"></div>
+
+
+<aside class="sidebar" id="sidebar">
+
+    <div class="brand">
+        <div class="brand-icon">C</div>
+
+        <div class="brand-name">
+            CloudCalc <span>PRO</span>
+        </div>
+    </div>
+
+
+    <div class="nav-section">
+
+        <div class="nav-title">
+            WORKSPACE
+        </div>
+
+        <nav class="nav-list">
+
+            <a href="dashboard.html" class="nav-link">
+                <span class="nav-icon">◈</span>
+                Dashboard
+            </a>
+
+            <a href="calculator.html" class="nav-link active">
+                <span class="nav-icon">+</span>
+                Calculator
+            </a>
+
+            <a href="history.html" class="nav-link">
+                <span class="nav-icon">↺</span>
+                History
+            </a>
+
+            <a href="analytics.html" class="nav-link">
+                <span class="nav-icon">◒</span>
+                Analytics
+            </a>
+
+        </nav>
+
+    </div>
+
+
+    <div class="nav-section">
+
+        <div class="nav-title">
+            ACCOUNT
+        </div>
+
+        <nav class="nav-list">
+
+            <a href="profile.html" class="nav-link">
+                <span class="nav-icon">◎</span>
+                Profile
+            </a>
+
+            <a href="settings.html" class="nav-link">
+                <span class="nav-icon">⚙</span>
+                Settings
+            </a>
+
+        </nav>
+
+    </div>
+
+
+    <div class="sidebar-bottom">
+
+        <div class="user-mini">
+
+            <div class="user-avatar" id="userAvatar">
+                U
+            </div>
+
+            <div class="user-info">
+
+                <div class="user-name" id="userName">
+                    User
+                </div>
+
+                <div class="user-email" id="userEmail">
+                    Loading...
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            class="logout-btn"
+            id="logoutBtn"
+            type="button"
+        >
+            Sign out
+        </button>
+
+    </div>
+
+</aside>
+
+
+<main class="main-content">
+
+    <header class="topbar">
+
+        <div class="topbar-inner">
+
+            <button
+                class="mobile-menu"
+                id="mobileMenu"
+                type="button"
+            >
+                ☰
+            </button>
+
+            <div class="page-heading">
+
+                <h1>Calculator</h1>
+
+                <p>
+                    Calculate, save and manage your results.
+                </p>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <div class="calculator-wrapper">
+
+        <section class="calculator-card">
+
+            <div class="display">
+
+                <div
+                    class="expression"
+                    id="expression"
+                >
+                    0
+                </div>
+
+                <div
+                    class="result"
+                    id="result"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="keypad">
+
+                <button class="calc-btn clear" data-action="clear">C</button>
+                <button class="calc-btn" data-action="delete">⌫</button>
+                <button class="calc-btn operator" data-value="%">%</button>
+                <button class="calc-btn operator" data-value="/">÷</button>
+
+                <button class="calc-btn" data-value="7">7</button>
+                <button class="calc-btn" data-value="8">8</button>
+                <button class="calc-btn" data-value="9">9</button>
+                <button class="calc-btn operator" data-value="*">×</button>
+
+                <button class="calc-btn" data-value="4">4</button>
+                <button class="calc-btn" data-value="5">5</button>
+                <button class="calc-btn" data-value="6">6</button>
+                <button class="calc-btn operator" data-value="-">−</button>
+
+                <button class="calc-btn" data-value="1">1</button>
+                <button class="calc-btn" data-value="2">2</button>
+                <button class="calc-btn" data-value="3">3</button>
+                <button class="calc-btn operator" data-value="+">+</button>
+
+                <button class="calc-btn zero" data-value="0">0</button>
+                <button class="calc-btn" data-value=".">.</button>
+                <button class="calc-btn equals" data-action="calculate">=</button>
+
+            </div>
+
+
+            <div class="calculator-info">
+
+                <span>
+                    Keyboard supported
+                </span>
+
+                <span>
+                    Auto-save enabled
+                </span>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<div class="toast" id="toast"></div>
+
+
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Supabase Client -->
+<script src="../js/supabaseClient.js"></script>
+
+<!-- Calculator JavaScript -->
+<script src="../js/pages/calculator.js"></script>
+</body>
+
+</html>

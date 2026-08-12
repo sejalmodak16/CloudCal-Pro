@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>CloudCalc Pro | Smart Cloud Calculator</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           CLOUDCALC PRO - LANDING PAGE
+        ===================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .landing-nav {
+            position: fixed;
+
+            top: 18px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: min(1120px, calc(100% - 36px));
+
+            height: 66px;
+
+            z-index: 1000;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 18px;
+
+            border: 1px solid rgba(95,160,255,.20);
+
+            border-radius: 18px;
+
+            background:
+                rgba(7,17,36,.78);
+
+            backdrop-filter: blur(20px);
+
+            box-shadow:
+                0 20px 55px rgba(0,0,0,.35),
+                inset 0 1px 0 rgba(255,255,255,.05);
+        }
+
+        .landing-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            color: white;
+            text-decoration: none;
+        }
+
+        .landing-logo {
+            width: 39px;
+            height: 39px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #3182ff,
+                    #6548ed
+                );
+
+            box-shadow:
+                0 10px 25px rgba(49,130,255,.28);
+
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .landing-brand-name {
+            font-size: 15px;
+            font-weight: 900;
+        }
+
+        .landing-brand-name span {
+            color: var(--cyan);
+        }
+
+        .landing-links {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .landing-links a {
+            color: #8293ae;
+
+            text-decoration: none;
+
+            font-size: 11px;
+            font-weight: 600;
+
+            transition: .2s;
+        }
+
+        .landing-links a:hover {
+            color: white;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-login {
+            height: 38px;
+
+            padding: 0 14px;
+
+            display: flex;
+            align-items: center;
+
+            border: 1px solid rgba(95,160,255,.15);
+
+            border-radius: 9px;
+
+            color: #9caec8;
+
+            background: rgba(100,140,200,.035);
+
+            text-decoration: none;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .nav-register {
+            height: 38px;
+
+            padding: 0 15px;
+
+            display: flex;
+            align-items: center;
+
+            border-radius: 9px;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3182ff,
+                    #6048ed
+                );
+
+            text-decoration: none;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            box-shadow:
+                0 8px 20px rgba(49,130,255,.20);
+        }
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            position: relative;
+
+            min-height: 850px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding:
+                145px
+                25px
+                100px;
+
+            text-align: center;
+        }
+
+        .hero-content {
+            position: relative;
+
+            z-index: 5;
+
+            max-width: 900px;
+
+            margin: auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-bottom: 25px;
+
+            padding: 8px 13px;
+
+            border: 1px solid rgba(95,160,255,.20);
+
+            border-radius: 30px;
+
+            background:
+                rgba(49,130,255,.06);
+
+            color: #8ca7cf;
+
+            font-size: 9px;
+            font-weight: 800;
+
+            letter-spacing: .8px;
+
+            text-transform: uppercase;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: #35d9a1;
+
+            box-shadow:
+                0 0 12px rgba(53,217,161,.8);
+        }
+
+        .hero h1 {
+            margin: 0;
+
+            color: white;
+
+            font-size:
+                clamp(
+                    48px,
+                    7vw,
+                    88px
+                );
+
+            line-height: .98;
+
+            letter-spacing: -4px;
+
+            font-weight: 950;
+
+            text-shadow:
+                0 15px 45px rgba(0,0,0,.3);
+        }
+
+        .hero h1 span {
+            display: block;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #3182ff,
+                    #6c5cff,
+                    #16c5d4
+                );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            color: transparent;
+        }
+
+        .hero-description {
+            max-width: 600px;
+
+            margin:
+                28px
+                auto
+                0;
+
+            color: #8192ad;
+
+            font-size: 14px;
+
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+
+            margin-top: 32px;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            min-width: 145px;
+            height: 47px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 11px;
+
+            text-decoration: none;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            transition:
+                transform .2s,
+                box-shadow .2s,
+                background .2s;
+        }
+
+        .primary-btn {
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3182ff,
+                    #6048ed
+                );
+
+            box-shadow:
+                0 15px 30px
+                rgba(49,130,255,.25);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 20px 40px
+                rgba(49,130,255,.35);
+        }
+
+        .secondary-btn {
+            color: #9badc6;
+
+            border: 1px solid
+                rgba(95,160,255,.18);
+
+            background:
+                rgba(100,140,200,.04);
+        }
+
+        .secondary-btn:hover {
+            transform: translateY(-3px);
+
+            color: white;
+
+            background:
+                rgba(100,140,200,.08);
+        }
+
+        /* =====================================================
+           3D CALCULATOR
+        ===================================================== */
+
+        .calculator-scene {
+            position: relative;
+
+            width: min(650px, 90vw);
+
+            height: 330px;
+
+            margin:
+                90px
+                auto
+                0;
+
+            perspective: 1100px;
+        }
+
+        .calculator-card {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            width: 440px;
+            height: 270px;
+
+            transform:
+                translate(-50%, -50%)
+                rotateX(10deg)
+                rotateY(-18deg)
+                rotateZ(1deg);
+
+            padding: 20px;
+
+            border:
+                1px solid
+                rgba(100,170,255,.22);
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(19,38,76,.95),
+                    rgba(5,13,30,.98)
+                );
+
+            box-shadow:
+                35px 45px 70px
+                rgba(0,0,0,.5),
+
+                -10px -10px 35px
+                rgba(49,130,255,.08),
+
+                inset 0 1px 0
+                rgba(255,255,255,.08);
+
+            animation:
+                floatingCalculator
+                5s ease-in-out infinite;
+        }
+
+        .calculator-card::before {
+            content: "";
+
+            position: absolute;
+
+            left: 15px;
+            right: 15px;
+
+            bottom: -17px;
+
+            height: 25px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(0,0,0,.35);
+
+            filter: blur(12px);
+
+            transform:
+                rotateX(70deg);
+        }
+
+        .calc-display {
+            height: 70px;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            padding: 0 17px;
+
+            margin-bottom: 15px;
+
+            border:
+                1px solid
+                rgba(100,140,200,.12);
+
+            border-radius: 12px;
+
+            background:
+                rgba(2,8,20,.8);
+
+            color: white;
+
+            font-size: 25px;
+            font-weight: 800;
+
+            box-shadow:
+                inset 0 5px 20px
+                rgba(0,0,0,.25);
+        }
+
+        .calc-buttons {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 9px;
+        }
+
+        .calc-key {
+            height: 31px;
+
+            display: grid;
+            place-items: center;
+
+            border:
+                1px solid
+                rgba(100,140,200,.11);
+
+            border-radius: 7px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(35,57,95,.8),
+                    rgba(12,25,48,.9)
+                );
+
+            color: #aab8cc;
+
+            font-size: 9px;
+            font-weight: 800;
+
+            box-shadow:
+                0 5px 10px
+                rgba(0,0,0,.2);
+        }
+
+        .calc-key.blue {
+            color: #72aaff;
+
+            background:
+                rgba(49,130,255,.12);
+        }
+
+        .calc-key.equal {
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3182ff,
+                    #6048ed
+                );
+        }
+
+        @keyframes floatingCalculator {
+
+            0%,
+            100% {
+                transform:
+                    translate(-50%, -50%)
+                    rotateX(10deg)
+                    rotateY(-18deg)
+                    rotateZ(1deg)
+                    translateY(0);
+            }
+
+            50% {
+                transform:
+                    translate(-50%, -50%)
+                    rotateX(10deg)
+                    rotateY(-18deg)
+                    rotateZ(1deg)
+                    translateY(-12px);
+            }
+
+        }
+
+        /* =====================================================
+           FEATURES
+        ===================================================== */
+
+        .section {
+            position: relative;
+
+            padding:
+                90px
+                25px;
+        }
+
+        .section-container {
+            width: min(1100px, 100%);
+
+            margin: auto;
+        }
+
+        .section-heading {
+            text-align: center;
+
+            margin-bottom: 45px;
+        }
+
+        .section-label {
+            margin-bottom: 10px;
+
+            color: #4f9dff;
+
+            font-size: 9px;
+            font-weight: 900;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+
+            color: white;
+
+            font-size: 34px;
+
+            letter-spacing: -1.5px;
+        }
+
+        .section-heading p {
+            max-width: 520px;
+
+            margin:
+                12px
+                auto
+                0;
+
+            color: #687b99;
+
+            font-size: 11px;
+
+            line-height: 1.7;
+        }
+
+        .features-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 17px;
+        }
+
+        .feature-card {
+            position: relative;
+
+            min-height: 190px;
+
+            padding: 24px;
+
+            overflow: hidden;
+
+            border:
+                1px solid
+                rgba(95,160,255,.16);
+
+            border-radius: 19px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(16,31,63,.76),
+                    rgba(5,12,28,.92)
+                );
+
+            box-shadow:
+                0 20px 45px
+                rgba(0,0,0,.24),
+
+                inset 0 1px 0
+                rgba(255,255,255,.04);
+
+            transition:
+                transform .25s,
+                border-color .25s;
+        }
+
+        .feature-card:hover {
+            transform:
+                translateY(-7px);
+
+            border-color:
+                rgba(95,160,255,.30);
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+
+            display: grid;
+            place-items: center;
+
+            margin-bottom: 18px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(49,130,255,.10);
+
+            border:
+                1px solid
+                rgba(95,160,255,.14);
+
+            color: #65a6ff;
+
+            font-size: 17px;
+        }
+
+        .feature-card h3 {
+            margin: 0 0 8px;
+
+            color: white;
+
+            font-size: 13px;
+        }
+
+        .feature-card p {
+            margin: 0;
+
+            color: #647696;
+
+            font-size: 10px;
+
+            line-height: 1.7;
+        }
+
+        /* =====================================================
+           HOW IT WORKS
+        ===================================================== */
+
+        .steps {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 30px;
+        }
+
+        .step {
+            position: relative;
+
+            text-align: center;
+        }
+
+        .step-number {
+            width: 52px;
+            height: 52px;
+
+            display: grid;
+            place-items: center;
+
+            margin:
+                0
+                auto
+                17px;
+
+            border:
+                1px solid
+                rgba(95,160,255,.20);
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(49,130,255,.16),
+                    rgba(96,72,237,.10)
+                );
+
+            color: #72aaff;
+
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .step h3 {
+            margin: 0 0 8px;
+
+            color: white;
+
+            font-size: 13px;
+        }
+
+        .step p {
+            margin: 0;
+
+            color: #637696;
+
+            font-size: 10px;
+
+            line-height: 1.7;
+        }
+
+        /* =====================================================
+           CTA
+        ===================================================== */
+
+        .cta-section {
+            padding:
+                100px
+                25px
+                120px;
+        }
+
+        .cta-card {
+            position: relative;
+
+            width: min(900px, 100%);
+
+            margin: auto;
+
+            padding:
+                65px
+                30px;
+
+            overflow: hidden;
+
+            text-align: center;
+
+            border:
+                1px solid
+                rgba(95,160,255,.20);
+
+            border-radius: 25px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(19,38,76,.75),
+                    rgba(5,13,30,.95)
+                );
+
+            box-shadow:
+                0 30px 70px
+                rgba(0,0,0,.35);
+        }
+
+        .cta-card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 300px;
+            height: 300px;
+
+            left: 50%;
+            top: -200px;
+
+            transform:
+                translateX(-50%);
+
+            border-radius: 50%;
+
+            background:
+                rgba(49,130,255,.12);
+
+            filter: blur(50px);
+        }
+
+        .cta-card h2 {
+            position: relative;
+
+            margin: 0;
+
+            color: white;
+
+            font-size: 32px;
+
+            letter-spacing: -1px;
+        }
+
+        .cta-card p {
+            position: relative;
+
+            max-width: 500px;
+
+            margin:
+                13px
+                auto
+                25px;
+
+            color: #7183a0;
+
+            font-size: 11px;
+
+            line-height: 1.7;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            padding:
+                30px
+                25px;
+
+            border-top:
+                1px solid
+                rgba(100,140,200,.08);
+
+            text-align: center;
+
+            color: #4e607c;
+
+            font-size: 9px;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .landing-links {
+                display: none;
+            }
+
+            .hero {
+                min-height: 760px;
+
+                padding-top: 130px;
+            }
+
+            .calculator-scene {
+                margin-top: 65px;
+
+                transform:
+                    scale(.82);
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+
+                gap: 35px;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .landing-nav {
+                width:
+                    calc(100% - 22px);
+
+                top: 11px;
+            }
+
+            .landing-brand-name {
+                font-size: 13px;
+            }
+
+            .nav-login {
+                display: none;
+            }
+
+            .hero {
+                padding:
+                    125px
+                    18px
+                    70px;
+            }
+
+            .hero h1 {
+                font-size: 48px;
+
+                letter-spacing: -2.5px;
+            }
+
+            .hero-description {
+                font-size: 12px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+
+                align-items: center;
+            }
+
+            .primary-btn,
+            .secondary-btn {
+                width: 210px;
+            }
+
+            .calculator-scene {
+                width: 100%;
+
+                height: 270px;
+
+                transform:
+                    scale(.62);
+
+                margin-top: 35px;
+            }
+
+            .section {
+                padding:
+                    70px
+                    18px;
+            }
+
+            .section-heading h2 {
+                font-size: 27px;
+            }
+
+            .cta-section {
+                padding:
+                    70px
+                    18px
+                    90px;
+            }
+
+            .cta-card {
+                padding:
+                    45px
+                    20px;
+            }
+
+            .cta-card h2 {
+                font-size: 27px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+    <!-- =====================================================
+         BACKGROUND
+    ====================================================== -->
+
+    <div class="background-grid"></div>
+
+    <div class="glow glow-blue"></div>
+    <div class="glow glow-purple"></div>
+    <div class="glow glow-cyan"></div>
+
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <nav class="landing-nav">
+
+        <a
+            href="index.html"
+            class="landing-brand"
+        >
+
+            <div class="landing-logo">
+                C
+            </div>
+
+            <div class="landing-brand-name">
+                CloudCalc <span>PRO</span>
+            </div>
+
+        </a>
+
+
+        <div class="landing-links">
+
+            <a href="#features">
+                Features
+            </a>
+
+            <a href="#how-it-works">
+                How it works
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+        </div>
+
+
+        <div class="nav-actions">
+
+            <a
+                href="login.html"
+                class="nav-login"
+            >
+                Login
+            </a>
+
+            <a
+                href="register.html"
+                class="nav-register"
+            >
+                Get Started
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-badge">
+
+                <span class="badge-dot"></span>
+
+                Cloud-powered calculator
+
+            </div>
+
+
+            <h1>
+
+                Calculate smarter.
+
+                <span>
+                    Work faster.
+                </span>
+
+            </h1>
+
+
+            <p class="hero-description">
+
+                CloudCalc Pro is a modern cloud-based calculator
+                designed to make calculations simple, fast and
+                organized — with secure history, analytics and
+                a beautiful 3D workspace.
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+                <a
+                    href="register.html"
+                    class="primary-btn"
+                >
+                    Start Calculating →
+                </a>
+
+                <a
+                    href="login.html"
+                    class="secondary-btn"
+                >
+                    Sign In
+                </a>
+
+            </div>
+
+
+            <!-- 3D CALCULATOR -->
+
+            <div class="calculator-scene">
+
+                <div class="calculator-card">
+
+                    <div class="calc-display">
+                        12,480.75
+                    </div>
+
+
+                    <div class="calc-buttons">
+
+                        <div class="calc-key blue">
+                            AC
+                        </div>
+
+                        <div class="calc-key">
+                            ±
+                        </div>
+
+                        <div class="calc-key">
+                            %
+                        </div>
+
+                        <div class="calc-key blue">
+                            ÷
+                        </div>
+
+
+                        <div class="calc-key">
+                            7
+                        </div>
+
+                        <div class="calc-key">
+                            8
+                        </div>
+
+                        <div class="calc-key">
+                            9
+                        </div>
+
+                        <div class="calc-key blue">
+                            ×
+                        </div>
+
+
+                        <div class="calc-key">
+                            4
+                        </div>
+
+                        <div class="calc-key">
+                            5
+                        </div>
+
+                        <div class="calc-key">
+                            6
+                        </div>
+
+                        <div class="calc-key blue">
+                            −
+                        </div>
+
+
+                        <div class="calc-key">
+                            1
+                        </div>
+
+                        <div class="calc-key">
+                            2
+                        </div>
+
+                        <div class="calc-key">
+                            3
+                        </div>
+
+                        <div class="calc-key blue">
+                            +
+                        </div>
+
+
+                        <div class="calc-key">
+                            0
+                        </div>
+
+                        <div class="calc-key">
+                            .
+                        </div>
+
+                        <div class="calc-key">
+                            ⌫
+                        </div>
+
+                        <div class="calc-key equal">
+                            =
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FEATURES
+    ====================================================== -->
+
+    <section
+        class="section"
+        id="features"
+    >
+
+        <div class="section-container">
+
+            <div class="section-heading">
+
+                <div class="section-label">
+                    POWERFUL FEATURES
+                </div>
+
+                <h2>
+                    Everything you need.
+                </h2>
+
+                <p>
+                    A complete calculation workspace built
+                    around speed, simplicity and productivity.
+                </p>
+
+            </div>
+
+
+            <div class="features-grid">
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        +
+                    </div>
+
+                    <h3>
+                        Smart Calculator
+                    </h3>
+
+                    <p>
+                        Perform everyday mathematical operations
+                        quickly with mouse or keyboard input.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ☁
+                    </div>
+
+                    <h3>
+                        Cloud Storage
+                    </h3>
+
+                    <p>
+                        Save your calculations securely with
+                        your authenticated CloudCalc account.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ↺
+                    </div>
+
+                    <h3>
+                        Calculation History
+                    </h3>
+
+                    <p>
+                        Access your previous calculations whenever
+                        you need them from your history workspace.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ◒
+                    </div>
+
+                    <h3>
+                        Analytics
+                    </h3>
+
+                    <p>
+                        Understand your calculation habits with
+                        activity charts and operation statistics.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ⚡
+                    </div>
+
+                    <h3>
+                        Fast & Responsive
+                    </h3>
+
+                    <p>
+                        Designed to work smoothly across desktop,
+                        tablet and mobile screens.
+                    </p>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ◈
+                    </div>
+
+                    <h3>
+                        Modern 3D Interface
+                    </h3>
+
+                    <p>
+                        A polished glassmorphism interface with
+                        depth, glow and interactive visual elements.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         HOW IT WORKS
+    ====================================================== -->
+
+    <section
+        class="section"
+        id="how-it-works"
+    >
+
+        <div class="section-container">
+
+            <div class="section-heading">
+
+                <div class="section-label">
+                    SIMPLE WORKFLOW
+                </div>
+
+                <h2>
+                    Start in seconds.
+                </h2>
+
+                <p>
+                    No complicated setup. Create an account,
+                    calculate and keep your work organized.
+                </p>
+
+            </div>
+
+
+            <div class="steps">
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        01
+                    </div>
+
+                    <h3>
+                        Create your account
+                    </h3>
+
+                    <p>
+                        Register securely and access your
+                        personal CloudCalc workspace.
+                    </p>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        02
+                    </div>
+
+                    <h3>
+                        Calculate
+                    </h3>
+
+                    <p>
+                        Use the calculator with your mouse
+                        or keyboard to solve expressions.
+                    </p>
+
+                </div>
+
+
+                <div class="step">
+
+                    <div class="step-number">
+                        03
+                    </div>
+
+                    <h3>
+                        Track your work
+                    </h3>
+
+                    <p>
+                        Review history and understand your
+                        activity through analytics.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ABOUT
+    ====================================================== -->
+
+    <section
+        class="section"
+        id="about"
+    >
+
+        <div class="section-container">
+
+            <div class="section-heading">
+
+                <div class="section-label">
+                    CLOUDCALC PRO
+                </div>
+
+                <h2>
+                    Built for productive calculation.
+                </h2>
+
+                <p>
+                    CloudCalc Pro combines a powerful calculator,
+                    cloud-backed history and analytics into one
+                    clean workspace.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CTA
+    ====================================================== -->
+
+    <section class="cta-section">
+
+        <div class="cta-card">
+
+            <h2>
+                Ready to calculate smarter?
+            </h2>
+
+            <p>
+                Create your free CloudCalc Pro account and
+                start organizing your calculations today.
+            </p>
+
+            <a
+                href="register.html"
+                class="primary-btn"
+                style="
+                    width:190px;
+                    margin:auto;
+                "
+            >
+                Create Account →
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        © 2026 CloudCalc Pro.
+        Built for smarter calculations.
+
+    </footer>
+
+
+    <!-- =====================================================
+         OPTIONAL SUPABASE CHECK
+    ====================================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="../js/supabaseClient.js"></script>
+
+
+    <script>
+
+        /*
+         * If the user is already logged in,
+         * change "Get Started" into Dashboard.
+         *
+         * This does not create or modify any backend
+         * functionality.
+         */
+
+        async function checkExistingSession() {
+
+            if (
+                !window.supabaseClient
+            ) {
+                return;
+            }
+
+            try {
+
+                const {
+                    data
+                } =
+                    await window
+                        .supabaseClient
+                        .auth
+                        .getSession();
+
+
+                if (
+                    data &&
+                    data.session
+                ) {
+
+                    const buttons =
+                        document.querySelectorAll(
+                            ".nav-register"
+                        );
+
+
+                    buttons.forEach(
+                        button => {
+
+                            button.textContent =
+                                "Open Dashboard →";
+
+                            button.href =
+                                "dashboard.html";
+
+                        }
+                    );
+
+                }
+
+            }
+            catch (error) {
+
+                console.warn(
+                    "Session check skipped:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        checkExistingSession();
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../js/supabaseClient.js"></script>
+
+<script src="../js/app.js"></script>
+
+</body>
+
+</html>

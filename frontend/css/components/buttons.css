@@ -1,0 +1,290 @@
+/* =========================================================
+   CLOUDCALC PRO
+   BUTTON SYSTEM
+========================================================= */
+
+.button {
+    position: relative;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 12px;
+
+    min-height: 46px;
+
+    padding:
+        12px
+        20px;
+
+    border-radius:
+        var(--radius-md);
+
+    border:
+        1px solid transparent;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    isolation: isolate;
+
+    cursor: pointer;
+
+    transform:
+        translate3d(0, 0, 0);
+}
+
+
+/* =========================================================
+   BUTTON SHINE
+========================================================= */
+
+.button::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -120%;
+
+    width: 70%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.16),
+            transparent
+        );
+
+    transform:
+        skewX(-18deg);
+
+    transition:
+        left 700ms var(--ease-out);
+
+    pointer-events: none;
+}
+
+.button:hover::before {
+    left: 140%;
+}
+
+
+/* =========================================================
+   BUTTON CONTENT
+========================================================= */
+
+.button > * {
+    position: relative;
+
+    z-index: 1;
+}
+
+.button-icon {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 18px;
+
+    font-size: 18px;
+
+    line-height: 1;
+
+    transition:
+        transform var(--transition-smooth);
+}
+
+.button:hover .button-icon {
+    transform:
+        translate3d(4px, 0, 0);
+}
+
+
+/* =========================================================
+   PRIMARY
+========================================================= */
+
+.button-primary {
+    color: #ffffff;
+
+    background:
+        var(--cc-gradient-primary);
+
+    border-color:
+        rgba(255, 255, 255, 0.12);
+
+    box-shadow:
+        0 12px 30px rgba(108, 99, 255, 0.24),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.button-primary:hover {
+    box-shadow:
+        0 18px 45px rgba(108, 99, 255, 0.34),
+        0 0 30px rgba(0, 212, 255, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.20);
+}
+
+
+/* =========================================================
+   GLASS
+========================================================= */
+
+.button-glass {
+    color:
+        var(--cc-text-primary);
+
+    background:
+        rgba(255, 255, 255, 0.055);
+
+    border-color:
+        rgba(255, 255, 255, 0.12);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.button-glass:hover {
+    background:
+        rgba(255, 255, 255, 0.085);
+
+    border-color:
+        rgba(108, 99, 255, 0.30);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.25),
+        0 0 25px rgba(108, 99, 255, 0.08);
+}
+
+
+/* =========================================================
+   LARGE
+========================================================= */
+
+.button-large {
+    min-height: 56px;
+
+    padding:
+        15px
+        24px;
+
+    border-radius:
+        var(--radius-md);
+}
+
+
+/* =========================================================
+   SMALL
+========================================================= */
+
+.button-small {
+    min-height: 38px;
+
+    padding:
+        8px
+        14px;
+
+    border-radius:
+        var(--radius-sm);
+
+    font-size:
+        var(--text-sm);
+}
+
+
+/* =========================================================
+   ICON BUTTON
+========================================================= */
+
+.button-icon-only {
+    width: 44px;
+    height: 44px;
+
+    min-height: 44px;
+
+    padding: 0;
+
+    border-radius:
+        var(--radius-md);
+}
+
+
+/* =========================================================
+   DISABLED
+========================================================= */
+
+.button:disabled,
+.button.disabled {
+    opacity: 0.45;
+
+    cursor: not-allowed;
+
+    pointer-events: none;
+
+    box-shadow: none;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.button.is-loading {
+    pointer-events: none;
+}
+
+.button.is-loading::after {
+    content: "";
+
+    width: 16px;
+    height: 16px;
+
+    margin-left: 4px;
+
+    border:
+        2px solid rgba(255, 255, 255, 0.35);
+
+    border-top-color:
+        #ffffff;
+
+    border-radius: 50%;
+
+    animation:
+        buttonSpinner 700ms linear infinite;
+}
+
+@keyframes buttonSpinner {
+    to {
+        transform:
+            rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .button-large {
+        width: 100%;
+
+        min-height: 54px;
+    }
+
+}

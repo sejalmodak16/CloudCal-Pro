@@ -1,0 +1,397 @@
+/* =========================================================
+   CLOUDCALC PRO
+   MOTION & ANIMATION SYSTEM
+========================================================= */
+
+
+/* =========================================================
+   PAGE INTRO
+========================================================= */
+
+@keyframes pageEnter {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+
+}
+
+
+.landing-page {
+    animation:
+        pageEnter 900ms var(--ease-out) both;
+}
+
+
+/* =========================================================
+   FLOATING
+========================================================= */
+
+@keyframes floating {
+
+    0%,
+    100% {
+        transform:
+            translate3d(0, 0, 0);
+    }
+
+    50% {
+        transform:
+            translate3d(0, -14px, 0);
+    }
+
+}
+
+
+.floating {
+    animation:
+        floating 6s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   ORBIT ROTATION
+========================================================= */
+
+@keyframes orbitRotate {
+
+    from {
+        transform:
+            rotateX(68deg)
+            rotateZ(0deg);
+    }
+
+    to {
+        transform:
+            rotateX(68deg)
+            rotateZ(360deg);
+    }
+
+}
+
+
+.orbit-outer {
+    animation:
+        orbitRotate 28s linear infinite;
+}
+
+
+@keyframes orbitRotateReverse {
+
+    from {
+        transform:
+            rotateX(68deg)
+            rotateZ(360deg);
+    }
+
+    to {
+        transform:
+            rotateX(68deg)
+            rotateZ(0deg);
+    }
+
+}
+
+
+.orbit-inner {
+    animation:
+        orbitRotateReverse 20s linear infinite;
+}
+
+
+/* =========================================================
+   GLOW PULSE
+========================================================= */
+
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        opacity: 0.14;
+
+        transform:
+            scale(1);
+    }
+
+    50% {
+        opacity: 0.25;
+
+        transform:
+            scale(1.08);
+    }
+
+}
+
+
+.visual-glow {
+    animation:
+        glowPulse 7s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   STATUS PULSE
+========================================================= */
+
+@keyframes statusPulse {
+
+    0%,
+    100% {
+        opacity: 0.65;
+
+        box-shadow:
+            0 0 0
+            rgba(0, 212, 255, 0);
+    }
+
+    50% {
+        opacity: 1;
+
+        box-shadow:
+            0 0 16px
+            rgba(0, 212, 255, 0.65);
+    }
+
+}
+
+
+.status-indicator,
+.label-dot {
+    animation:
+        statusPulse 2.2s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   SCROLL LINE
+========================================================= */
+
+@keyframes scrollIndicator {
+
+    0% {
+        transform:
+            scaleY(0);
+
+        transform-origin:
+            top;
+    }
+
+    50% {
+        transform:
+            scaleY(1);
+
+        transform-origin:
+            top;
+    }
+
+    51% {
+        transform-origin:
+            bottom;
+    }
+
+    100% {
+        transform:
+            scaleY(0);
+
+        transform-origin:
+            bottom;
+    }
+
+}
+
+
+.scroll-line {
+    animation:
+        scrollIndicator 2s
+        cubic-bezier(0.65, 0, 0.35, 1)
+        infinite;
+}
+
+
+/* =========================================================
+   CARD REVEAL
+========================================================= */
+
+@keyframes cardReveal {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translate3d(0, 40px, 0)
+            rotateX(5deg);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translate3d(0, 0, 0)
+            rotateX(0);
+    }
+
+}
+
+
+.reveal {
+    animation:
+        cardReveal 800ms var(--ease-out) both;
+}
+
+
+/* =========================================================
+   STAGGER
+========================================================= */
+
+.reveal:nth-child(1) {
+    animation-delay: 80ms;
+}
+
+
+.reveal:nth-child(2) {
+    animation-delay: 160ms;
+}
+
+
+.reveal:nth-child(3) {
+    animation-delay: 240ms;
+}
+
+
+.reveal:nth-child(4) {
+    animation-delay: 320ms;
+}
+
+
+/* =========================================================
+   HOVER LIFT
+========================================================= */
+
+.motion-lift {
+    transition:
+        transform var(--transition-smooth),
+        box-shadow var(--transition-smooth);
+}
+
+
+.motion-lift:hover {
+    transform:
+        translate3d(0, -8px, 0);
+}
+
+
+/* =========================================================
+   SHIMMER
+========================================================= */
+
+@keyframes shimmer {
+
+    from {
+        transform:
+            translateX(-120%);
+    }
+
+    to {
+        transform:
+            translateX(120%);
+    }
+
+}
+
+
+.shimmer {
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+.shimmer::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    width: 40%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.08),
+            transparent
+        );
+
+    transform:
+        translateX(-120%);
+
+    animation:
+        shimmer 4s
+        ease-in-out
+        infinite;
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   BUTTON MOTION
+========================================================= */
+
+.button {
+    transition:
+        transform var(--transition-smooth),
+        box-shadow var(--transition-smooth),
+        border-color var(--transition-normal);
+}
+
+
+.button:hover {
+    transform:
+        translate3d(0, -3px, 0);
+}
+
+
+.button:active {
+    transform:
+        translate3d(0, 1px, 0)
+        scale(0.98);
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .landing-page,
+    .floating,
+    .orbit-outer,
+    .orbit-inner,
+    .visual-glow,
+    .status-indicator,
+    .label-dot,
+    .scroll-line,
+    .reveal,
+    .shimmer::before {
+        animation: none !important;
+    }
+
+    .button,
+    .motion-lift {
+        transition: none !important;
+    }
+
+}

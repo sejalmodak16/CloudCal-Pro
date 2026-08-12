@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+< lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Secure login to CloudCalc Pro"
+    >
+
+    <title>Login | CloudCalc Pro</title>
+
+    <!-- Existing CloudCalc CSS -->
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           CLOUDCALC PRO - LOGIN PAGE
+        ===================================================== */
+
+        .auth-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-container {
+            position: relative;
+            z-index: 5;
+
+            flex: 1;
+
+            width: min(1100px, calc(100% - 30px));
+            margin: 0 auto;
+
+            display: grid;
+            grid-template-columns: 1fr 430px;
+
+            align-items: center;
+
+            gap: 80px;
+
+            padding: 55px 0 80px;
+        }
+
+
+        /* =====================================================
+           LEFT INTRO
+        ===================================================== */
+
+        .auth-intro {
+            max-width: 560px;
+        }
+
+        .auth-intro-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 8px 13px;
+
+            border: 1px solid rgba(86, 242, 194, .22);
+            border-radius: 100px;
+
+            background: rgba(86, 242, 194, .05);
+
+            color: #8cefd2;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+
+            margin-bottom: 24px;
+        }
+
+        .auth-intro h1 {
+            font-size: clamp(45px, 5vw, 70px);
+            line-height: 1;
+            letter-spacing: -3px;
+
+            margin-bottom: 22px;
+        }
+
+        .auth-intro h1 span {
+            background:
+                linear-gradient(
+                    100deg,
+                    var(--blue-bright),
+                    var(--cyan),
+                    #b59aff
+                );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            color: transparent;
+        }
+
+        .auth-intro p {
+            max-width: 500px;
+
+            color: var(--text-soft);
+
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+        .security-points {
+            display: flex;
+            flex-direction: column;
+
+            gap: 13px;
+
+            margin-top: 35px;
+        }
+
+        .security-point {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            color: var(--text-soft);
+
+            font-size: 13px;
+        }
+
+        .security-icon {
+            width: 31px;
+            height: 31px;
+
+            flex-shrink: 0;
+
+            display: grid;
+            place-items: center;
+
+            border: 1px solid rgba(86, 242, 194, .2);
+            border-radius: 9px;
+
+            background: rgba(86, 242, 194, .06);
+
+            color: var(--mint);
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           LOGIN CARD
+        ===================================================== */
+
+        .auth-card {
+            position: relative;
+
+            width: 100%;
+
+            padding: 34px;
+
+            border: 1px solid rgba(95, 160, 255, .28);
+            border-radius: 25px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(20, 34, 68, .84),
+                    rgba(7, 14, 32, .93)
+                );
+
+            box-shadow:
+                0 35px 90px rgba(0,0,0,.55),
+                0 0 45px rgba(49,130,255,.08),
+                inset 0 1px 0 rgba(255,255,255,.07);
+
+            backdrop-filter: blur(22px);
+
+            transform:
+                perspective(1000px)
+                rotateY(-3deg);
+
+            transition:
+                transform .5s ease,
+                border-color .3s ease;
+        }
+
+        .auth-card:hover {
+            transform:
+                perspective(1000px)
+                rotateY(0deg)
+                translateY(-4px);
+
+            border-color:
+                rgba(95,160,255,.45);
+        }
+
+        .auth-card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 130px;
+            height: 130px;
+
+            top: -70px;
+            right: -60px;
+
+            border-radius: 50%;
+
+            background: var(--blue);
+
+            filter: blur(70px);
+
+            opacity: .15;
+
+            pointer-events: none;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .auth-header {
+            margin-bottom: 28px;
+        }
+
+        .auth-logo {
+            width: 48px;
+            height: 48px;
+
+            display: grid;
+            place-items: center;
+
+            margin-bottom: 20px;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #388cff,
+                    #6145ed
+                );
+
+            box-shadow:
+                0 12px 30px rgba(49,130,255,.28);
+
+            font-size: 24px;
+            font-weight: 900;
+        }
+
+        .auth-header h2 {
+            font-size: 27px;
+            letter-spacing: -.8px;
+
+            margin-bottom: 8px;
+        }
+
+        .auth-header p {
+            color: var(--text-soft);
+
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           FORM
+        ===================================================== */
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+
+            gap: 17px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+
+            gap: 8px;
+        }
+
+        .form-label {
+            color: #c6d2e8;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: .4px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+
+            left: 14px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #7185a9;
+
+            font-size: 14px;
+
+            pointer-events: none;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 49px;
+
+            padding: 0 14px 0 42px;
+
+            border: 1px solid rgba(103,146,211,.18);
+            border-radius: 11px;
+
+            outline: none;
+
+            background: rgba(3,9,23,.62);
+
+            color: white;
+
+            font-size: 13px;
+
+            transition: all .25s ease;
+        }
+
+        .form-input::placeholder {
+            color: #52617c;
+        }
+
+        .form-input:focus {
+            border-color:
+                rgba(72,160,255,.65);
+
+            background:
+                rgba(7,16,36,.85);
+
+            box-shadow:
+                0 0 0 3px rgba(49,130,255,.08),
+                0 0 25px rgba(49,130,255,.08);
+        }
+
+        .password-wrapper .form-input {
+            padding-right: 45px;
+        }
+
+        .password-toggle {
+            position: absolute;
+
+            right: 12px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            border: none;
+            background: transparent;
+
+            color: #7185a9;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+            padding: 5px;
+        }
+
+        .password-toggle:hover {
+            color: var(--cyan);
+        }
+
+
+        /* =====================================================
+           OPTIONS
+        ===================================================== */
+
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-top: -2px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            color: var(--text-soft);
+
+            font-size: 11px;
+
+            cursor: pointer;
+        }
+
+        .remember input {
+            accent-color: var(--blue);
+        }
+
+        .forgot-link {
+            color: var(--blue-bright);
+
+            font-size: 11px;
+        }
+
+        .forgot-link:hover {
+            color: var(--cyan);
+        }
+
+
+        /* =====================================================
+           LOGIN BUTTON
+        ===================================================== */
+
+        .login-button {
+            width: 100%;
+            height: 51px;
+
+            margin-top: 4px;
+
+            border: 1px solid rgba(116,185,255,.5);
+            border-radius: 11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3182ff,
+                    #6048ed
+                );
+
+            color: white;
+
+            font-size: 13px;
+            font-weight: 800;
+
+            letter-spacing: .4px;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 15px 30px rgba(49,130,255,.2);
+
+            transition: all .3s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 20px 40px rgba(49,130,255,.32);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-button.loading {
+            opacity: .65;
+            pointer-events: none;
+        }
+
+
+        /* =====================================================
+           DIVIDER
+        ===================================================== */
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            margin: 24px 0 20px;
+
+            color: #56647f;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: "";
+
+            flex: 1;
+
+            height: 1px;
+
+            background:
+                rgba(101,145,210,.12);
+        }
+
+        .register-prompt {
+            text-align: center;
+
+            color: var(--text-soft);
+
+            font-size: 12px;
+        }
+
+        .register-prompt a {
+            color: var(--cyan);
+
+            font-weight: 700;
+
+            margin-left: 4px;
+        }
+
+        .register-prompt a:hover {
+            color: white;
+        }
+
+
+        /* =====================================================
+           MESSAGE
+        ===================================================== */
+
+        .form-message {
+            display: none;
+
+            padding: 11px 13px;
+
+            border-radius: 9px;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+            margin-bottom: 16px;
+        }
+
+        .form-message.show {
+            display: block;
+        }
+
+        .form-message.error {
+            border: 1px solid rgba(255,90,110,.25);
+
+            background: rgba(255,70,90,.06);
+
+            color: #ff9ca9;
+        }
+
+        .form-message.success {
+            border: 1px solid rgba(86,242,194,.25);
+
+            background: rgba(86,242,194,.06);
+
+            color: #8cefd2;
+        }
+
+
+        /* =====================================================
+           BACK LINK
+        ===================================================== */
+
+        .auth-back {
+            position: absolute;
+
+            top: 27px;
+            left: 30px;
+
+            z-index: 20;
+
+            color: var(--text-soft);
+
+            font-size: 12px;
+
+            transition: color .2s ease;
+        }
+
+        .auth-back:hover {
+            color: white;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .auth-container {
+                grid-template-columns: 1fr;
+
+                max-width: 500px;
+
+                gap: 40px;
+
+                padding-top: 70px;
+            }
+
+            .auth-intro {
+                text-align: center;
+                max-width: 100%;
+            }
+
+            .auth-intro-label {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .auth-intro p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .security-points {
+                align-items: center;
+            }
+
+            .auth-card {
+                transform: none;
+            }
+
+            .auth-card:hover {
+                transform: translateY(-4px);
+            }
+        }
+
+
+        @media (max-width: 520px) {
+
+            .auth-container {
+                width: calc(100% - 24px);
+
+                padding: 55px 0 35px;
+            }
+
+            .auth-intro h1 {
+                font-size: 43px;
+                letter-spacing: -2px;
+            }
+
+            .auth-intro p {
+                font-size: 13px;
+            }
+
+            .auth-card {
+                padding: 25px 20px;
+                border-radius: 20px;
+            }
+
+            .auth-header h2 {
+                font-size: 24px;
+            }
+
+            .form-options {
+                align-items: flex-start;
+                flex-direction: column;
+
+                gap: 10px;
+            }
+
+            .auth-back {
+                left: 18px;
+                top: 18px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+< class="auth-page">
+
+
+    <!-- =====================================================
+         BACKGROUND
+    ====================================================== -->
+
+    <div class="background-grid"></div>
+
+    <div class="glow glow-blue"></div>
+    <div class="glow glow-purple"></div>
+    <div class="glow glow-cyan"></div>
+
+
+    <!-- =====================================================
+         BACK
+    ====================================================== -->
+
+    <a
+        href="../index.html"
+        class="auth-back"
+    >
+        ← Back to CloudCalc
+    </a>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="auth-container">
+
+
+        <!-- =================================================
+             INTRO
+        ================================================== -->
+
+        <section class="auth-intro">
+
+            <div class="auth-intro-label">
+
+                <span class="status-dot"></span>
+
+                SECURE CLOUD ACCESS
+
+            </div>
+
+
+            <h1>
+
+                Welcome
+
+                <span>
+                    Back.
+                </span>
+
+            </h1>
+
+
+            <p>
+                Sign in to access your CloudCalc Pro
+                dashboard, calculations, history and
+                personal account.
+            </p>
+
+
+            <div class="security-points">
+
+                <div class="security-point">
+
+                    <div class="security-icon">
+                        ✓
+                    </div>
+
+                    Secure Supabase authentication
+
+                </div>
+
+
+                <div class="security-point">
+
+                    <div class="security-icon">
+                        ☁
+                    </div>
+
+                    Your calculations saved in the cloud
+
+                </div>
+
+
+                <div class="security-point">
+
+                    <div class="security-icon">
+                        ◉
+                    </div>
+
+                    Personal calculation history
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             LOGIN CARD
+        ================================================== -->
+
+        <section class="auth-card">
+
+
+            <div class="auth-header">
+
+                <div class="auth-logo">
+                    C
+                </div>
+
+                <h2>
+                    Sign in
+                </h2>
+
+                <p>
+                    Enter your account credentials
+                    to continue.
+                </p>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="formMessage"
+                class="form-message"
+                role="alert"
+            ></div>
+
+
+            <!-- =================================================
+                 LOGIN FORM
+            ================================================== -->
+
+            <form
+                id="loginForm"
+                class="auth-form"
+                novalidate
+            >
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label
+                        for="email"
+                        class="form-label"
+                    >
+                        EMAIL ADDRESS
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            @
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-input"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label
+                        for="password"
+                        class="form-label"
+                    >
+                        PASSWORD
+                    </label>
+
+                    <div
+                        class="input-wrapper password-wrapper"
+                    >
+
+                        <span class="input-icon">
+                            ●
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-input"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="togglePassword"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                        >
+                            ◉
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- OPTIONS -->
+
+                <div class="form-options">
+
+                    <label class="remember">
+
+                        <input
+                            type="checkbox"
+                            id="remember"
+                        >
+
+                        Remember me
+
+                    </label>
+
+
+                    <a
+                        href="#"
+                        class="forgot-link"
+                        id="forgotPassword"
+                    >
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <!-- LOGIN -->
+
+                <button
+                    type="submit"
+                    class="login-button"
+                    id="loginButton"
+                >
+                    LOGIN TO CLOUDCALC
+                </button>
+
+            </form>
+
+
+            <!-- DIVIDER -->
+
+            <div class="auth-divider">
+                NEW TO CLOUDCALC?
+            </div>
+
+
+            <!-- REGISTER -->
+
+            <div class="register-prompt">
+
+                Don't have an account?
+
+                <a href="register.html">
+                    Create one →
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+     SCRIPTS
+====================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../js/supabaseClient.js"></script>
+
+<script src="../js/pages/login.js"></script>
+
+</body>
+</html>

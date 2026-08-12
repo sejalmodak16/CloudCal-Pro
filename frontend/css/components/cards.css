@@ -1,0 +1,427 @@
+/* =========================================================
+   CLOUDCALC PRO
+   CARD SYSTEM
+========================================================= */
+
+
+/* =========================================================
+   FEATURE GRID
+========================================================= */
+
+.feature-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 20px;
+
+    margin-top: 70px;
+}
+
+
+/* =========================================================
+   FEATURE CARD
+========================================================= */
+
+.feature-card {
+    position: relative;
+
+    min-height: 330px;
+
+    padding: 30px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    border-radius:
+        var(--radius-xl);
+
+    overflow: hidden;
+
+    transform-style:
+        preserve-3d;
+
+    transition:
+        transform var(--transition-spring),
+        border-color var(--transition-normal),
+        box-shadow var(--transition-smooth);
+}
+
+.feature-card:hover {
+    transform:
+        translate3d(0, -10px, 0)
+        rotateX(2deg)
+        rotateY(-1deg);
+
+    border-color:
+        rgba(108, 99, 255, 0.30);
+
+    box-shadow:
+        0 35px 90px rgba(0, 0, 0, 0.40),
+        0 0 45px rgba(108, 99, 255, 0.09),
+        inset 0 1px 0 rgba(255, 255, 255, 0.10);
+}
+
+
+/* =========================================================
+   CARD GLOW
+========================================================= */
+
+.feature-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    right: -70px;
+    bottom: -80px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(108, 99, 255, 0.18),
+            transparent 70%
+        );
+
+    filter:
+        blur(10px);
+
+    pointer-events: none;
+
+    transition:
+        transform var(--transition-spring),
+        opacity var(--transition-normal);
+}
+
+.feature-card:hover::after {
+    transform:
+        scale(1.3);
+
+    opacity: 1.3;
+}
+
+
+/* =========================================================
+   FEATURE TOP
+========================================================= */
+
+.feature-top {
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+
+/* =========================================================
+   FEATURE ICON
+========================================================= */
+
+.feature-icon {
+    width: 54px;
+    height: 54px;
+
+    display: grid;
+
+    place-items: center;
+
+    border-radius:
+        17px;
+
+    color:
+        var(--cc-accent);
+
+    font-size: 24px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(108, 99, 255, 0.16),
+            rgba(0, 212, 255, 0.05)
+        );
+
+    border:
+        1px solid rgba(108, 99, 255, 0.18);
+
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    transform:
+        translateZ(25px);
+
+    transition:
+        transform var(--transition-spring);
+}
+
+.feature-card:hover .feature-icon {
+    transform:
+        translateZ(45px)
+        rotateZ(5deg)
+        scale(1.06);
+}
+
+
+/* =========================================================
+   FEATURE CONTENT
+========================================================= */
+
+.feature-card h3,
+.feature-card p,
+.feature-link {
+    position: relative;
+
+    z-index: 2;
+}
+
+.feature-card p {
+    max-width: 430px;
+}
+
+
+/* =========================================================
+   TECHNOLOGY STACK
+========================================================= */
+
+.technology-stack {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+
+    margin-top: 55px;
+}
+
+
+/* =========================================================
+   TECHNOLOGY CARD
+========================================================= */
+
+.tech-card {
+    position: relative;
+
+    min-height: 130px;
+
+    padding: 22px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: space-between;
+
+    border-radius:
+        var(--radius-lg);
+
+    overflow: hidden;
+
+    transform-style:
+        preserve-3d;
+
+    transition:
+        transform var(--transition-spring),
+        border-color var(--transition-normal),
+        box-shadow var(--transition-smooth);
+}
+
+.tech-card:hover {
+    transform:
+        translate3d(0, -7px, 0)
+        rotateX(2deg);
+
+    border-color:
+        rgba(0, 212, 255, 0.24);
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.30),
+        0 0 30px rgba(0, 212, 255, 0.06);
+}
+
+.tech-card strong {
+    position: relative;
+
+    z-index: 2;
+
+    transform:
+        translateZ(18px);
+}
+
+.tech-card span {
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   TECH CARD LIGHT
+========================================================= */
+
+.tech-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 90px;
+    height: 90px;
+
+    right: -35px;
+    top: -35px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0, 212, 255, 0.13),
+            transparent 70%
+        );
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   CTA CARD
+========================================================= */
+
+.cta-section {
+    padding:
+        var(--section-padding)
+        var(--container-padding);
+}
+
+
+.cta-card {
+    position: relative;
+
+    width: min(
+        100%,
+        1000px
+    );
+
+    margin: 0 auto;
+
+    padding:
+        clamp(50px, 8vw, 100px)
+        30px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    text-align: center;
+
+    border-radius:
+        var(--radius-2xl);
+
+    overflow: hidden;
+
+    transform-style:
+        preserve-3d;
+
+    box-shadow:
+        0 40px 100px rgba(0, 0, 0, 0.40),
+        0 0 70px rgba(108, 99, 255, 0.08);
+}
+
+
+/* =========================================================
+   CTA GLOW
+========================================================= */
+
+.cta-glow {
+    position: absolute;
+
+    width: 500px;
+    height: 300px;
+
+    top: -180px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(108, 99, 255, 0.22),
+            transparent 70%
+        );
+
+    filter:
+        blur(25px);
+
+    pointer-events: none;
+}
+
+
+.cta-card > *:not(.cta-glow) {
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .technology-stack {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .feature-grid {
+        grid-template-columns:
+            1fr;
+
+        margin-top: 45px;
+    }
+
+    .feature-card {
+        min-height: 280px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .technology-stack {
+        grid-template-columns:
+            1fr;
+    }
+
+    .tech-card {
+        min-height: 110px;
+    }
+
+    .cta-card {
+        border-radius:
+            var(--radius-xl);
+    }
+
+}

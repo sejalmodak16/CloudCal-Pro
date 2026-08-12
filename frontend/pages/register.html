@@ -1,0 +1,2042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Create your CloudCalc Pro account"
+    >
+
+    <title>Register | CloudCalc Pro</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           REGISTER PAGE
+        ===================================================== */
+
+        .auth-page {
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+
+        .auth-container {
+            position: relative;
+
+            z-index: 5;
+
+            flex: 1;
+
+            width: min(
+                1100px,
+                calc(100% - 30px)
+            );
+
+            margin: 0 auto;
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 450px;
+
+            align-items: center;
+
+            gap: 75px;
+
+            padding:
+                55px 0 70px;
+        }
+
+
+        /* =====================================================
+           LEFT CONTENT
+        ===================================================== */
+
+        .auth-intro {
+            max-width: 560px;
+        }
+
+
+        .auth-intro-label {
+            width: fit-content;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            padding:
+                8px 13px;
+
+            border:
+                1px solid
+                rgba(86, 242, 194, .22);
+
+            border-radius:
+                100px;
+
+            background:
+                rgba(86, 242, 194, .05);
+
+            color:
+                #8cefd2;
+
+            font-size:
+                10px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                1.5px;
+
+            margin-bottom:
+                24px;
+        }
+
+
+        .auth-intro h1 {
+            font-size:
+                clamp(
+                    43px,
+                    5vw,
+                    68px
+                );
+
+            line-height:
+                1;
+
+            letter-spacing:
+                -3px;
+
+            margin-bottom:
+                22px;
+        }
+
+
+        .auth-intro h1 span {
+            background:
+                linear-gradient(
+                    100deg,
+                    var(--blue-bright),
+                    var(--cyan),
+                    #b59aff
+                );
+
+            -webkit-background-clip:
+                text;
+
+            background-clip:
+                text;
+
+            color:
+                transparent;
+        }
+
+
+        .auth-intro p {
+            max-width:
+                510px;
+
+            color:
+                var(--text-soft);
+
+            font-size:
+                15px;
+
+            line-height:
+                1.8;
+        }
+
+
+        /* =====================================================
+           BENEFITS
+        ===================================================== */
+
+        .security-points {
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                13px;
+
+            margin-top:
+                32px;
+        }
+
+
+        .security-point {
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                12px;
+
+            color:
+                var(--text-soft);
+
+            font-size:
+                13px;
+        }
+
+
+        .security-icon {
+            width:
+                32px;
+
+            height:
+                32px;
+
+            flex-shrink:
+                0;
+
+            display:
+                grid;
+
+            place-items:
+                center;
+
+            border:
+                1px solid
+                rgba(78,158,255,.22);
+
+            border-radius:
+                9px;
+
+            background:
+                rgba(49,130,255,.07);
+
+            color:
+                var(--cyan);
+
+            font-size:
+                12px;
+        }
+
+
+        /* =====================================================
+           REGISTER CARD
+        ===================================================== */
+
+        .auth-card {
+            position:
+                relative;
+
+            width:
+                100%;
+
+            padding:
+                32px;
+
+            border:
+                1px solid
+                rgba(95,160,255,.28);
+
+            border-radius:
+                25px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(20,34,68,.86),
+                    rgba(7,14,32,.94)
+                );
+
+            box-shadow:
+                0 35px 90px
+                rgba(0,0,0,.55),
+
+                0 0 50px
+                rgba(49,130,255,.08),
+
+                inset 0 1px 0
+                rgba(255,255,255,.07);
+
+            backdrop-filter:
+                blur(22px);
+
+            transform:
+                perspective(1000px)
+                rotateY(-3deg);
+
+            transition:
+                transform .5s ease,
+                border-color .3s ease;
+        }
+
+
+        .auth-card:hover {
+            transform:
+                perspective(1000px)
+                rotateY(0deg)
+                translateY(-4px);
+
+            border-color:
+                rgba(95,160,255,.45);
+        }
+
+
+        .auth-card::before {
+            content:
+                "";
+
+            position:
+                absolute;
+
+            width:
+                140px;
+
+            height:
+                140px;
+
+            top:
+                -75px;
+
+            right:
+                -60px;
+
+            border-radius:
+                50%;
+
+            background:
+                var(--purple);
+
+            filter:
+                blur(75px);
+
+            opacity:
+                .15;
+
+            pointer-events:
+                none;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .auth-header {
+            margin-bottom:
+                24px;
+        }
+
+
+        .auth-logo {
+            width:
+                48px;
+
+            height:
+                48px;
+
+            display:
+                grid;
+
+            place-items:
+                center;
+
+            margin-bottom:
+                18px;
+
+            border-radius:
+                13px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #388cff,
+                    #6145ed
+                );
+
+            box-shadow:
+                0 12px 30px
+                rgba(49,130,255,.28);
+
+            font-size:
+                24px;
+
+            font-weight:
+                900;
+        }
+
+
+        .auth-header h2 {
+            font-size:
+                27px;
+
+            letter-spacing:
+                -.8px;
+
+            margin-bottom:
+                7px;
+        }
+
+
+        .auth-header p {
+            color:
+                var(--text-soft);
+
+            font-size:
+                13px;
+
+            line-height:
+                1.6;
+        }
+
+
+        /* =====================================================
+           FORM
+        ===================================================== */
+
+        .auth-form {
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                14px;
+        }
+
+
+        .form-group {
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                7px;
+        }
+
+
+        .form-label {
+            color:
+                #c6d2e8;
+
+            font-size:
+                10px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                .5px;
+        }
+
+
+        .input-wrapper {
+            position:
+                relative;
+        }
+
+
+        .input-icon {
+            position:
+                absolute;
+
+            left:
+                14px;
+
+            top:
+                50%;
+
+            transform:
+                translateY(-50%);
+
+            color:
+                #7185a9;
+
+            font-size:
+                13px;
+
+            pointer-events:
+                none;
+        }
+
+
+        .form-input {
+            width:
+                100%;
+
+            height:
+                47px;
+
+            padding:
+                0 14px 0 41px;
+
+            border:
+                1px solid
+                rgba(103,146,211,.18);
+
+            border-radius:
+                11px;
+
+            outline:
+                none;
+
+            background:
+                rgba(3,9,23,.62);
+
+            color:
+                white;
+
+            font-size:
+                12px;
+
+            transition:
+                all .25s ease;
+        }
+
+
+        .form-input::placeholder {
+            color:
+                #52617c;
+        }
+
+
+        .form-input:focus {
+            border-color:
+                rgba(72,160,255,.65);
+
+            background:
+                rgba(7,16,36,.85);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(49,130,255,.08),
+
+                0 0 25px
+                rgba(49,130,255,.08);
+        }
+
+
+        /* =====================================================
+           PASSWORD
+        ===================================================== */
+
+        .password-wrapper .form-input {
+            padding-right:
+                44px;
+        }
+
+
+        .password-toggle {
+            position:
+                absolute;
+
+            right:
+                11px;
+
+            top:
+                50%;
+
+            transform:
+                translateY(-50%);
+
+            border:
+                none;
+
+            background:
+                transparent;
+
+            color:
+                #7185a9;
+
+            cursor:
+                pointer;
+
+            padding:
+                5px;
+
+            font-size:
+                13px;
+        }
+
+
+        .password-toggle:hover {
+            color:
+                var(--cyan);
+        }
+
+
+        /* =====================================================
+           PASSWORD STRENGTH
+        ===================================================== */
+
+        .password-strength {
+            display:
+                flex;
+
+            gap:
+                4px;
+
+            margin-top:
+                2px;
+        }
+
+
+        .strength-bar {
+            flex:
+                1;
+
+            height:
+                3px;
+
+            border-radius:
+                10px;
+
+            background:
+                rgba(100,130,180,.15);
+
+            transition:
+                background .25s ease;
+        }
+
+
+        .strength-text {
+            margin-top:
+                3px;
+
+            color:
+                var(--text-muted);
+
+            font-size:
+                9px;
+        }
+
+
+        /* =====================================================
+           TERMS
+        ===================================================== */
+
+        .terms {
+            display:
+                flex;
+
+            align-items:
+                flex-start;
+
+            gap:
+                8px;
+
+            margin-top:
+                3px;
+
+            color:
+                var(--text-soft);
+
+            font-size:
+                10px;
+
+            line-height:
+                1.5;
+        }
+
+
+        .terms input {
+            margin-top:
+                2px;
+
+            accent-color:
+                var(--blue);
+
+            flex-shrink:
+                0;
+        }
+
+
+        .terms a {
+            color:
+                var(--cyan);
+        }
+
+
+        .terms a:hover {
+            color:
+                white;
+        }
+
+
+        /* =====================================================
+           REGISTER BUTTON
+        ===================================================== */
+
+        .register-button {
+            width:
+                100%;
+
+            height:
+                50px;
+
+            margin-top:
+                4px;
+
+            border:
+                1px solid
+                rgba(116,185,255,.5);
+
+            border-radius:
+                11px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #3182ff,
+                    #6048ed
+                );
+
+            color:
+                white;
+
+            font-size:
+                12px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                .5px;
+
+            cursor:
+                pointer;
+
+            box-shadow:
+                0 15px 30px
+                rgba(49,130,255,.2);
+
+            transition:
+                all .3s ease;
+        }
+
+
+        .register-button:hover {
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 20px 40px
+                rgba(49,130,255,.32);
+        }
+
+
+        .register-button:active {
+            transform:
+                translateY(0);
+        }
+
+
+        .register-button.loading {
+            opacity:
+                .65;
+
+            pointer-events:
+                none;
+        }
+
+
+        /* =====================================================
+           MESSAGE
+        ===================================================== */
+
+        .form-message {
+            display:
+                none;
+
+            padding:
+                10px 12px;
+
+            border-radius:
+                9px;
+
+            font-size:
+                10px;
+
+            line-height:
+                1.5;
+
+            margin-bottom:
+                12px;
+        }
+
+
+        .form-message.show {
+            display:
+                block;
+        }
+
+
+        .form-message.error {
+            border:
+                1px solid
+                rgba(255,90,110,.25);
+
+            background:
+                rgba(255,70,90,.06);
+
+            color:
+                #ff9ca9;
+        }
+
+
+        .form-message.success {
+            border:
+                1px solid
+                rgba(86,242,194,.25);
+
+            background:
+                rgba(86,242,194,.06);
+
+            color:
+                #8cefd2;
+        }
+
+
+        /* =====================================================
+           LOGIN LINK
+        ===================================================== */
+
+        .auth-divider {
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                12px;
+
+            margin:
+                21px 0 18px;
+
+            color:
+                #56647f;
+
+            font-size:
+                9px;
+
+            text-transform:
+                uppercase;
+
+            letter-spacing:
+                1px;
+        }
+
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content:
+                "";
+
+            flex:
+                1;
+
+            height:
+                1px;
+
+            background:
+                rgba(101,145,210,.12);
+        }
+
+
+        .login-prompt {
+            text-align:
+                center;
+
+            color:
+                var(--text-soft);
+
+            font-size:
+                11px;
+        }
+
+
+        .login-prompt a {
+            color:
+                var(--cyan);
+
+            font-weight:
+                700;
+
+            margin-left:
+                4px;
+        }
+
+
+        .login-prompt a:hover {
+            color:
+                white;
+        }
+
+
+        /* =====================================================
+           BACK
+        ===================================================== */
+
+        .auth-back {
+            position:
+                absolute;
+
+            top:
+                27px;
+
+            left:
+                30px;
+
+            z-index:
+                20;
+
+            color:
+                var(--text-soft);
+
+            font-size:
+                12px;
+
+            transition:
+                color .2s ease;
+        }
+
+
+        .auth-back:hover {
+            color:
+                white;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .auth-container {
+                grid-template-columns:
+                    1fr;
+
+                max-width:
+                    500px;
+
+                gap:
+                    38px;
+
+                padding-top:
+                    70px;
+            }
+
+
+            .auth-intro {
+                text-align:
+                    center;
+
+                max-width:
+                    100%;
+            }
+
+
+            .auth-intro-label {
+                margin-left:
+                    auto;
+
+                margin-right:
+                    auto;
+            }
+
+
+            .auth-intro p {
+                margin-left:
+                    auto;
+
+                margin-right:
+                    auto;
+            }
+
+
+            .security-points {
+                align-items:
+                    center;
+            }
+
+
+            .auth-card {
+                transform:
+                    none;
+            }
+
+
+            .auth-card:hover {
+                transform:
+                    translateY(-4px);
+            }
+
+        }
+
+
+        @media (max-width: 520px) {
+
+            .auth-container {
+                width:
+                    calc(100% - 24px);
+
+                padding:
+                    55px 0 35px;
+            }
+
+
+            .auth-intro h1 {
+                font-size:
+                    42px;
+
+                letter-spacing:
+                    -2px;
+            }
+
+
+            .auth-intro p {
+                font-size:
+                    13px;
+            }
+
+
+            .auth-card {
+                padding:
+                    25px 20px;
+
+                border-radius:
+                    20px;
+            }
+
+
+            .auth-header h2 {
+                font-size:
+                    24px;
+            }
+
+
+            .auth-back {
+                left:
+                    18px;
+
+                top:
+                    18px;
+            }
+
+        }
+
+    </style>
+</head>
+
+
+<body class="auth-page">
+
+    <!-- =====================================================
+         BACKGROUND
+    ====================================================== -->
+
+    <div class="background-grid"></div>
+
+    <div class="glow glow-blue"></div>
+    <div class="glow glow-purple"></div>
+    <div class="glow glow-cyan"></div>
+
+
+    <!-- =====================================================
+         BACK TO HOME
+    ====================================================== -->
+
+    <a
+        href="../index.html"
+        class="auth-back"
+    >
+        ← Back to CloudCalc
+    </a>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="auth-container">
+
+
+        <!-- =================================================
+             LEFT SIDE
+        ================================================== -->
+
+        <section class="auth-intro">
+
+            <div class="auth-intro-label">
+
+                <span class="status-dot"></span>
+
+                START YOUR CLOUD JOURNEY
+
+            </div>
+
+
+            <h1>
+
+                Build Smarter.
+
+                <span>
+                    Calculate Faster.
+                </span>
+
+            </h1>
+
+
+            <p>
+
+                Create your CloudCalc Pro account and
+                keep your calculations, history and
+                analytics available whenever you need them.
+
+            </p>
+
+
+            <div class="security-points">
+
+                <div class="security-point">
+
+                    <div class="security-icon">
+                        ✓
+                    </div>
+
+                    Free CloudCalc Pro account
+
+                </div>
+
+
+                <div class="security-point">
+
+                    <div class="security-icon">
+                        ☁
+                    </div>
+
+                    Save calculations securely
+
+                </div>
+
+
+                <div class="security-point">
+
+                    <div class="security-icon">
+                        ◈
+                    </div>
+
+                    Access your personal dashboard
+
+                </div>
+
+
+                <div class="security-point">
+
+                    <div class="security-icon">
+                        ↗
+                    </div>
+
+                    Track your calculation history
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             REGISTER CARD
+        ================================================== -->
+
+        <section class="auth-card">
+
+
+            <div class="auth-header">
+
+                <div class="auth-logo">
+                    C
+                </div>
+
+
+                <h2>
+                    Create account
+                </h2>
+
+
+                <p>
+                    Start using CloudCalc Pro today.
+                </p>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="formMessage"
+                class="form-message"
+            ></div>
+
+
+            <!-- =================================================
+                 FORM
+            ================================================== -->
+
+            <form
+                id="registerForm"
+                class="auth-form"
+            >
+
+
+                <!-- FULL NAME -->
+
+                <div class="form-group">
+
+                    <label
+                        for="fullName"
+                        class="form-label"
+                    >
+                        FULL NAME
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ◉
+                        </span>
+
+
+                        <input
+                            type="text"
+                            id="fullName"
+                            name="fullName"
+                            class="form-input"
+                            placeholder="Your name"
+                            autocomplete="name"
+                            required
+                            minlength="2"
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label
+                        for="email"
+                        class="form-label"
+                    >
+                        EMAIL ADDRESS
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            @
+                        </span>
+
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-input"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label
+                        for="password"
+                        class="form-label"
+                    >
+                        PASSWORD
+                    </label>
+
+
+                    <div
+                        class="input-wrapper password-wrapper"
+                    >
+
+                        <span class="input-icon">
+                            ●
+                        </span>
+
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-input"
+                            placeholder="Create a password"
+                            autocomplete="new-password"
+                            required
+                            minlength="6"
+                        >
+
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="togglePassword"
+                            aria-label="Show password"
+                        >
+                            ◉
+                        </button>
+
+                    </div>
+
+
+                    <div class="password-strength">
+
+                        <span
+                            class="strength-bar"
+                            id="strength1"
+                        ></span>
+
+                        <span
+                            class="strength-bar"
+                            id="strength2"
+                        ></span>
+
+                        <span
+                            class="strength-bar"
+                            id="strength3"
+                        ></span>
+
+                        <span
+                            class="strength-bar"
+                            id="strength4"
+                        ></span>
+
+                    </div>
+
+
+                    <div
+                        class="strength-text"
+                        id="strengthText"
+                    >
+                        Use at least 6 characters.
+                    </div>
+
+                </div>
+
+
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="form-group">
+
+                    <label
+                        for="confirmPassword"
+                        class="form-label"
+                    >
+                        CONFIRM PASSWORD
+                    </label>
+
+
+                    <div
+                        class="input-wrapper password-wrapper"
+                    >
+
+                        <span class="input-icon">
+                            ●
+                        </span>
+
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            class="form-input"
+                            placeholder="Confirm your password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="toggleConfirmPassword"
+                            aria-label="Show password"
+                        >
+                            ◉
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TERMS -->
+
+                <label class="terms">
+
+                    <input
+                        type="checkbox"
+                        id="terms"
+                        required
+                    >
+
+
+                    <span>
+
+                        I agree to the CloudCalc Pro
+                        <a href="#">
+                            Terms of Service
+                        </a>
+                        and
+                        <a href="#">
+                            Privacy Policy
+                        </a>.
+
+                    </span>
+
+                </label>
+
+
+                <!-- REGISTER -->
+
+                <button
+                    type="submit"
+                    class="register-button"
+                    id="registerButton"
+                >
+                    CREATE CLOUDCALC ACCOUNT
+                </button>
+
+            </form>
+
+
+            <!-- DIVIDER -->
+
+            <div class="auth-divider">
+                ALREADY REGISTERED?
+            </div>
+
+
+            <!-- LOGIN -->
+
+            <div class="login-prompt">
+
+                Already have an account?
+
+                <a href="login.html">
+                    Sign in →
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         SUPABASE
+    ====================================================== -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+
+
+    <script
+        src="../js/supabaseClient.js"
+    ></script>
+
+
+    <script
+        src="../js/auth.js"
+    ></script>
+
+
+    <!-- =====================================================
+         REGISTER PAGE SCRIPT
+    ====================================================== -->
+
+    <script>
+
+        /* =================================================
+           ELEMENTS
+        ================================================= */
+
+        const registerForm =
+            document.getElementById(
+                "registerForm"
+            );
+
+        const registerButton =
+            document.getElementById(
+                "registerButton"
+            );
+
+        const formMessage =
+            document.getElementById(
+                "formMessage"
+            );
+
+        const passwordInput =
+            document.getElementById(
+                "password"
+            );
+
+        const confirmPasswordInput =
+            document.getElementById(
+                "confirmPassword"
+            );
+
+
+        /* =================================================
+           MESSAGE
+        ================================================= */
+
+        function showMessage(
+            message,
+            type = "error"
+        ) {
+
+            formMessage.textContent =
+                message;
+
+            formMessage.className =
+                "form-message show " +
+                type;
+
+        }
+
+
+        function clearMessage() {
+
+            formMessage.textContent =
+                "";
+
+            formMessage.className =
+                "form-message";
+
+        }
+
+
+        /* =================================================
+           PASSWORD TOGGLE
+        ================================================= */
+
+        function setupPasswordToggle(
+            input,
+            button
+        ) {
+
+            if (!input || !button) {
+                return;
+            }
+
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    const isPassword =
+                        input.type ===
+                        "password";
+
+
+                    input.type =
+                        isPassword
+                            ? "text"
+                            : "password";
+
+                }
+            );
+
+        }
+
+
+        setupPasswordToggle(
+            passwordInput,
+            document.getElementById(
+                "togglePassword"
+            )
+        );
+
+
+        setupPasswordToggle(
+            confirmPasswordInput,
+            document.getElementById(
+                "toggleConfirmPassword"
+            )
+        );
+
+
+        /* =================================================
+           PASSWORD STRENGTH
+        ================================================= */
+
+        const strengthBars = [
+
+            document.getElementById(
+                "strength1"
+            ),
+
+            document.getElementById(
+                "strength2"
+            ),
+
+            document.getElementById(
+                "strength3"
+            ),
+
+            document.getElementById(
+                "strength4"
+            )
+
+        ];
+
+
+        const strengthText =
+            document.getElementById(
+                "strengthText"
+            );
+
+
+        passwordInput.addEventListener(
+            "input",
+            function () {
+
+                const password =
+                    passwordInput.value;
+
+
+                let score = 0;
+
+
+                if (
+                    password.length >= 6
+                ) {
+                    score++;
+                }
+
+
+                if (
+                    password.length >= 10
+                ) {
+                    score++;
+                }
+
+
+                if (
+                    /[A-Z]/.test(password) &&
+                    /[a-z]/.test(password)
+                ) {
+                    score++;
+                }
+
+
+                if (
+                    /\d/.test(password) ||
+                    /[^A-Za-z0-9]/.test(password)
+                ) {
+                    score++;
+                }
+
+
+                strengthBars.forEach(
+                    function (bar, index) {
+
+                        bar.style.background =
+                            index < score
+                                ? "var(--blue)"
+                                : "rgba(100,130,180,.15)";
+
+                    }
+                );
+
+
+                if (!password) {
+
+                    strengthText.textContent =
+                        "Use at least 6 characters.";
+
+                }
+                else if (score === 1) {
+
+                    strengthText.textContent =
+                        "Weak password.";
+
+                }
+                else if (score === 2) {
+
+                    strengthText.textContent =
+                        "Fair password.";
+
+                }
+                else if (score === 3) {
+
+                    strengthText.textContent =
+                        "Good password.";
+
+                }
+                else {
+
+                    strengthText.textContent =
+                        "Strong password.";
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           REGISTER
+        ================================================= */
+
+        registerForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+                clearMessage();
+
+
+                const fullName =
+                    document
+                        .getElementById(
+                            "fullName"
+                        )
+                        .value
+                        .trim();
+
+
+                const email =
+                    document
+                        .getElementById(
+                            "email"
+                        )
+                        .value
+                        .trim();
+
+
+                const password =
+                    passwordInput.value;
+
+
+                const confirmPassword =
+                    confirmPasswordInput.value;
+
+
+                const terms =
+                    document
+                        .getElementById(
+                            "terms"
+                        )
+                        .checked;
+
+
+                /* =========================================
+                   VALIDATION
+                ========================================= */
+
+
+                if (fullName.length < 2) {
+
+                    showMessage(
+                        "Please enter your full name."
+                    );
+
+                    return;
+                }
+
+
+                if (!email) {
+
+                    showMessage(
+                        "Please enter your email address."
+                    );
+
+                    return;
+                }
+
+
+                if (password.length < 6) {
+
+                    showMessage(
+                        "Password must contain at least 6 characters."
+                    );
+
+                    return;
+                }
+
+
+                if (
+                    password !==
+                    confirmPassword
+                ) {
+
+                    showMessage(
+                        "Passwords do not match."
+                    );
+
+                    return;
+                }
+
+
+                if (!terms) {
+
+                    showMessage(
+                        "Please accept the Terms of Service and Privacy Policy."
+                    );
+
+                    return;
+                }
+
+
+                /* =========================================
+                   LOADING
+                ========================================= */
+
+                registerButton.classList.add(
+                    "loading"
+                );
+
+                registerButton.textContent =
+                    "CREATING ACCOUNT...";
+
+
+                try {
+
+                    let result;
+
+
+                    /* =====================================
+                       EXISTING AUTH FUNCTION
+                    ===================================== */
+
+                    if (
+                        typeof window.registerUser ===
+                        "function"
+                    ) {
+
+                        result =
+                            await window.registerUser(
+                                fullName,
+                                email,
+                                password
+                            );
+
+                    }
+
+                    /* =====================================
+                       ALTERNATIVE AUTH FUNCTION
+                    ===================================== */
+
+                    else if (
+                        typeof window.register ===
+                        "function"
+                    ) {
+
+                        result =
+                            await window.register(
+                                fullName,
+                                email,
+                                password
+                            );
+
+                    }
+
+                    /* =====================================
+                       DIRECT SUPABASE
+                    ===================================== */
+
+                    else if (
+                        window.supabaseClient
+                    ) {
+
+                        const {
+                            data,
+                            error
+                        } =
+                            await window
+                                .supabaseClient
+                                .auth
+                                .signUp({
+
+                                    email:
+                                        email,
+
+                                    password:
+                                        password,
+
+                                    options: {
+
+                                        data: {
+
+                                            full_name:
+                                                fullName
+
+                                        }
+
+                                    }
+
+                                });
+
+
+                        if (error) {
+                            throw error;
+                        }
+
+
+                        result = {
+                            data: data
+                        };
+
+                    }
+
+                    else {
+
+                        throw new Error(
+                            "Supabase client is not configured."
+                        );
+
+                    }
+
+
+                    console.log(
+                        "Registration result:",
+                        result
+                    );
+
+
+                    /* =====================================
+                       SUCCESS
+                    ===================================== */
+
+                    showMessage(
+                        "Account created successfully. Redirecting to login...",
+                        "success"
+                    );
+
+
+                    registerButton.textContent =
+                        "ACCOUNT CREATED ✓";
+
+
+                    setTimeout(
+                        function () {
+
+                            window.location.href =
+                                "login.html";
+
+                        },
+                        1200
+                    );
+
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Registration error:",
+                        error
+                    );
+
+
+                    let message =
+                        error.message ||
+                        "Unable to create your account.";
+
+
+                    /* Friendly Supabase errors */
+
+                    if (
+                        message
+                            .toLowerCase()
+                            .includes(
+                                "user already registered"
+                            )
+                    ) {
+
+                        message =
+                            "An account with this email already exists. Please sign in.";
+
+                    }
+
+
+                    showMessage(
+                        message
+                    );
+
+
+                    registerButton.classList.remove(
+                        "loading"
+                    );
+
+                    registerButton.textContent =
+                        "CREATE CLOUDCALC ACCOUNT";
+
+                }
+
+            }
+        );
+
+    </script>
+    <!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Supabase Client -->
+<script src="../js/supabaseClient.js"></script>
+
+<!-- Authentication -->
+<script src="../js/auth.js"></script>
+
+<!-- Register Page -->
+<script src="../js/pages/register.js"></script>
+
+</body>
+</html>

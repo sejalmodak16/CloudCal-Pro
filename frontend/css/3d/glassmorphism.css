@@ -1,0 +1,214 @@
+/* =========================================================
+   CLOUDCALC PRO
+   GLASSMORPHISM SYSTEM
+========================================================= */
+
+.glass-panel {
+    position: relative;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.075),
+            rgba(255, 255, 255, 0.025)
+        );
+
+    border: 1px solid rgba(255, 255, 255, 0.11);
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.30),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(24px) saturate(135%);
+    -webkit-backdrop-filter: blur(24px) saturate(135%);
+}
+
+
+/* =========================================================
+   GLASS HIGHLIGHT
+========================================================= */
+
+.glass-panel::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.08),
+            transparent 35%
+        );
+
+    opacity: 0.65;
+}
+
+
+/* =========================================================
+   GLASS EDGE
+========================================================= */
+
+.glass-panel::after {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 8%;
+
+    width: 84%;
+    height: 1px;
+
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.25),
+            transparent
+        );
+
+    opacity: 0.7;
+}
+
+
+/* =========================================================
+   GLASS VARIANTS
+========================================================= */
+
+.glass-light {
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+
+.glass-dark {
+    background:
+        rgba(4, 8, 22, 0.62);
+
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+}
+
+
+.glass-primary {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(108, 99, 255, 0.14),
+            rgba(255, 255, 255, 0.035)
+        );
+
+    border-color:
+        rgba(108, 99, 255, 0.25);
+
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.35),
+        0 0 45px rgba(108, 99, 255, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+
+/* =========================================================
+   GLASS HOVER
+========================================================= */
+
+.glass-hover {
+    transition:
+        transform var(--transition-smooth),
+        border-color var(--transition-normal),
+        box-shadow var(--transition-smooth),
+        background var(--transition-normal);
+}
+
+
+.glass-hover:hover {
+    transform:
+        translate3d(0, -6px, 0);
+
+    border-color:
+        rgba(108, 99, 255, 0.28);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.095),
+            rgba(255, 255, 255, 0.035)
+        );
+
+    box-shadow:
+        0 35px 90px rgba(0, 0, 0, 0.38),
+        0 0 45px rgba(108, 99, 255, 0.10);
+}
+
+
+/* =========================================================
+   GLASS GLOW
+========================================================= */
+
+.glass-glow {
+    box-shadow:
+        0 25px 70px rgba(0, 0, 0, 0.35),
+        0 0 55px rgba(108, 99, 255, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+
+/* =========================================================
+   GLASS DIVIDER
+========================================================= */
+
+.glass-divider {
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.14),
+            transparent
+        );
+}
+
+
+/* =========================================================
+   FALLBACK FOR BACKDROP FILTER
+========================================================= */
+
+@supports not (
+    backdrop-filter: blur(20px)
+) {
+
+    .glass-panel {
+        background:
+            rgba(10, 16, 35, 0.92);
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .glass-hover {
+        transition: none;
+    }
+
+    .glass-hover:hover {
+        transform: none;
+    }
+
+}

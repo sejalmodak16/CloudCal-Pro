@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CloudCalc Pro Dashboard"
+    >
+
+    <title>Dashboard | CloudCalc Pro</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 18px;
+            top: 18px;
+            bottom: 18px;
+
+            width: 245px;
+
+            display: flex;
+            flex-direction: column;
+
+            padding: 22px 15px;
+
+            border: 1px solid rgba(95,160,255,.22);
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(15,28,58,.94),
+                    rgba(5,12,28,.97)
+                );
+
+            box-shadow:
+                0 30px 70px rgba(0,0,0,.45),
+                inset 0 1px 0 rgba(255,255,255,.06);
+
+            backdrop-filter: blur(20px);
+
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            padding: 4px 8px 25px;
+
+            border-bottom:
+                1px solid rgba(100,140,200,.10);
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #3182ff,
+                    #6145ed
+                );
+
+            box-shadow:
+                0 10px 25px rgba(49,130,255,.28);
+
+            color: white;
+            font-size: 19px;
+            font-weight: 900;
+        }
+
+        .brand-name {
+            color: white;
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .brand-name span {
+            color: var(--cyan);
+        }
+
+        .nav-section {
+            margin-top: 25px;
+        }
+
+        .nav-title {
+            padding: 0 10px 9px;
+
+            color: #536582;
+
+            font-size: 9px;
+            font-weight: 800;
+
+            letter-spacing: 1.3px;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            min-height: 44px;
+
+            padding: 0 12px;
+
+            border: 1px solid transparent;
+            border-radius: 11px;
+
+            color: var(--text-soft);
+
+            font-size: 12px;
+            text-decoration: none;
+
+            transition: .25s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+
+            background:
+                rgba(49,130,255,.07);
+
+            border-color:
+                rgba(95,160,255,.12);
+
+            transform:
+                translateX(3px);
+        }
+
+        .nav-link.active {
+            color: white;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(49,130,255,.17),
+                    rgba(96,72,237,.08)
+                );
+
+            border-color:
+                rgba(95,160,255,.22);
+
+            box-shadow:
+                inset 3px 0 0 #3182ff;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 8px;
+
+            background:
+                rgba(100,140,200,.07);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .user-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 11px;
+            margin-bottom: 8px;
+
+            border:
+                1px solid rgba(100,140,200,.12);
+
+            border-radius: 12px;
+
+            background:
+                rgba(100,140,200,.035);
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #3182ff,
+                    #6548ed
+                );
+
+            color: white;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .user-info {
+            min-width: 0;
+        }
+
+        .user-name,
+        .user-email {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-name {
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .user-email {
+            color: #647696;
+            font-size: 9px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            height: 38px;
+
+            border:
+                1px solid rgba(255,90,110,.12);
+
+            border-radius: 10px;
+
+            background:
+                rgba(255,70,90,.035);
+
+            color: #c77b89;
+
+            cursor: pointer;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main-content {
+            min-height: 100vh;
+
+            margin-left: 281px;
+
+            padding:
+                30px 32px 50px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            margin: 0 0 5px;
+
+            color: white;
+
+            font-size: 30px;
+
+            letter-spacing: -1.2px;
+        }
+
+        .page-heading p {
+            margin: 0;
+
+            color: var(--text-soft);
+
+            font-size: 12px;
+        }
+
+        .mobile-menu {
+            display: none;
+
+            width: 40px;
+            height: 40px;
+
+            border:
+                1px solid rgba(100,140,200,.18);
+
+            border-radius: 10px;
+
+            background:
+                rgba(15,28,58,.7);
+
+            color: white;
+
+            cursor: pointer;
+        }
+
+        /* ================= HERO ================= */
+
+        .command-card {
+            position: relative;
+
+            min-height: 330px;
+
+            padding: 30px;
+
+            overflow: hidden;
+
+            border:
+                1px solid rgba(95,160,255,.20);
+
+            border-radius: 25px;
+
+            background:
+                radial-gradient(
+                    circle at 75% 35%,
+                    rgba(49,130,255,.13),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    145deg,
+                    rgba(16,31,63,.88),
+                    rgba(5,12,28,.96)
+                );
+
+            box-shadow:
+                0 30px 80px rgba(0,0,0,.32),
+                inset 0 1px 0 rgba(255,255,255,.05);
+        }
+
+        .command-content {
+            position: relative;
+            z-index: 2;
+
+            max-width: 55%;
+        }
+
+        .eyebrow {
+            color: #5f9fff;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 12px;
+        }
+
+        .command-content h2 {
+            margin: 0 0 10px;
+
+            color: white;
+
+            font-size: 30px;
+        }
+
+        .command-content p {
+            color: #7284a2;
+
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        /* ================= 3D CORE ================= */
+
+        .core-scene {
+            position: absolute;
+
+            right: 8%;
+            top: 50%;
+
+            width: 230px;
+            height: 230px;
+
+            transform:
+                translateY(-50%)
+                rotateX(12deg)
+                rotateY(-18deg);
+
+            transform-style: preserve-3d;
+
+            animation:
+                floatingCore 5s ease-in-out infinite;
+        }
+
+        .core-ring {
+            position: absolute;
+
+            inset: 0;
+
+            border:
+                1px solid rgba(49,130,255,.45);
+
+            border-radius: 50%;
+
+            box-shadow:
+                0 0 40px rgba(49,130,255,.20);
+
+            transform:
+                rotateX(70deg);
+        }
+
+        .core-ring.two {
+            transform:
+                rotateY(70deg);
+        }
+
+        .core-ring.three {
+            transform:
+                rotateX(70deg)
+                rotateY(70deg);
+        }
+
+        .core-center {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            width: 120px;
+            height: 120px;
+
+            transform:
+                translate(-50%,-50%);
+
+            display: grid;
+            place-items: center;
+
+            border:
+                1px solid rgba(95,160,255,.35);
+
+            border-radius: 28px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(49,130,255,.18),
+                    rgba(96,72,237,.12)
+                );
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,.35),
+                inset 0 1px 0 rgba(255,255,255,.10);
+
+            backdrop-filter: blur(15px);
+
+            transform-style: preserve-3d;
+        }
+
+        .core-number {
+            color: white;
+
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .core-label {
+            position: absolute;
+
+            bottom: 25px;
+
+            color: #637696;
+
+            font-size: 9px;
+
+            letter-spacing: 1px;
+        }
+
+        @keyframes floatingCore {
+
+            0%,100% {
+                transform:
+                    translateY(-50%)
+                    rotateX(12deg)
+                    rotateY(-18deg);
+            }
+
+            50% {
+                transform:
+                    translateY(-56%)
+                    rotateX(16deg)
+                    rotateY(18deg);
+            }
+
+        }
+
+        /* ================= STATS ================= */
+
+        .stats-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-top: 18px;
+        }
+
+        .stat-card {
+            padding: 20px;
+
+            min-height: 125px;
+
+            border:
+                1px solid rgba(95,160,255,.15);
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(16,31,63,.75),
+                    rgba(5,12,28,.92)
+                );
+
+            box-shadow:
+                0 20px 45px rgba(0,0,0,.20);
+
+            transition: .25s ease;
+        }
+
+        .stat-card:hover {
+            transform:
+                translateY(-5px)
+                rotateX(2deg);
+        }
+
+        .stat-label {
+            color: #637696;
+
+            font-size: 9px;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            margin-top: 12px;
+
+            color: white;
+
+            font-size: 27px;
+            font-weight: 900;
+        }
+
+        .stat-sub {
+            margin-top: 5px;
+
+            color: #536582;
+
+            font-size: 9px;
+        }
+
+        /* ================= RECENT ================= */
+
+        .content-grid {
+            display: grid;
+
+            grid-template-columns:
+                1.4fr .9fr;
+
+            gap: 18px;
+
+            margin-top: 18px;
+        }
+
+        .panel {
+            padding: 22px;
+
+            border:
+                1px solid rgba(95,160,255,.15);
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(16,31,63,.78),
+                    rgba(5,12,28,.93)
+                );
+
+            box-shadow:
+                0 25px 55px rgba(0,0,0,.22);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .panel-header h3 {
+            margin: 0;
+
+            color: white;
+
+            font-size: 14px;
+        }
+
+        .panel-link {
+            color: #5797ff;
+
+            font-size: 9px;
+
+            text-decoration: none;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .history-item {
+            display: grid;
+
+            grid-template-columns:
+                1fr auto auto;
+
+            gap: 15px;
+
+            align-items: center;
+
+            padding: 12px 13px;
+
+            border:
+                1px solid rgba(100,140,200,.08);
+
+            border-radius: 11px;
+
+            background:
+                rgba(100,140,200,.035);
+        }
+
+        .history-expression {
+            color: #dce6f7;
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .history-date {
+            margin-top: 4px;
+
+            color: #536582;
+
+            font-size: 8px;
+        }
+
+        .history-operation {
+            color: #637696;
+
+            font-size: 9px;
+        }
+
+        .history-result {
+            color: #62cfff;
+
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .empty {
+            padding: 35px;
+
+            text-align: center;
+
+            color: #637696;
+
+            font-size: 11px;
+        }
+
+        /* ================= ACTIVITY ================= */
+
+        .activity-chart {
+            height: 190px;
+
+            display: flex;
+            align-items: flex-end;
+
+            gap: 8px;
+
+            padding:
+                15px 5px 5px;
+        }
+
+        .bar {
+            flex: 1;
+
+            min-width: 8px;
+
+            height: var(--height);
+
+            border-radius:
+                6px 6px 2px 2px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #3182ff,
+                    #6548ed
+                );
+
+            box-shadow:
+                0 0 15px rgba(49,130,255,.15);
+        }
+
+        .health {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            margin-top: 18px;
+
+            padding: 12px;
+
+            border:
+                1px solid rgba(90,220,170,.10);
+
+            border-radius: 12px;
+
+            background:
+                rgba(70,220,160,.035);
+        }
+
+        .health-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #54dfae;
+
+            box-shadow:
+                0 0 12px #54dfae;
+        }
+
+        .health span {
+            color: #75b89f;
+
+            font-size: 9px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width: 1100px) {
+
+            .stats-grid {
+                grid-template-columns:
+                    repeat(2,1fr);
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .core-scene {
+                right: 5%;
+                transform:
+                    translateY(-50%)
+                    scale(.85);
+            }
+
+        }
+
+        @media(max-width: 850px) {
+
+            .sidebar {
+                transform:
+                    translateX(-120%);
+
+                transition:
+                    transform .3s ease;
+            }
+
+            .sidebar.open {
+                transform:
+                    translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+
+                padding:
+                    22px 18px 35px;
+            }
+
+            .mobile-menu {
+                display: grid;
+
+                place-items: center;
+            }
+
+            .command-content {
+                max-width: 100%;
+            }
+
+            .core-scene {
+                opacity: .18;
+
+                right: -40px;
+            }
+
+        }
+
+        @media(max-width:600px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .command-card {
+                min-height: 280px;
+
+                padding: 22px;
+            }
+
+            .command-content h2 {
+                font-size: 24px;
+            }
+
+            .history-item {
+                grid-template-columns:
+                    1fr auto;
+            }
+
+            .history-operation {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="background-grid"></div>
+
+    <div class="glow glow-blue"></div>
+    <div class="glow glow-purple"></div>
+    <div class="glow glow-cyan"></div>
+
+
+    <!-- SIDEBAR -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                C
+            </div>
+
+            <div class="brand-name">
+                CloudCalc <span>PRO</span>
+            </div>
+
+        </div>
+
+
+        <div class="nav-section">
+
+            <div class="nav-title">
+                WORKSPACE
+            </div>
+
+            <nav class="nav-list">
+
+                <a
+                    href="dashboard.html"
+                    class="nav-link active"
+                >
+                    <span class="nav-icon">◈</span>
+                    Dashboard
+                </a>
+
+                <a
+                    href="calculator.html"
+                    class="nav-link"
+                >
+                    <span class="nav-icon">+</span>
+                    Calculator
+                </a>
+
+                <a
+                    href="history.html"
+                    class="nav-link"
+                >
+                    <span class="nav-icon">↺</span>
+                    History
+                </a>
+
+                <a
+                    href="analytics.html"
+                    class="nav-link"
+                >
+                    <span class="nav-icon">◒</span>
+                    Analytics
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="nav-section">
+
+            <div class="nav-title">
+                ACCOUNT
+            </div>
+
+            <nav class="nav-list">
+
+                <a
+                    href="profile.html"
+                    class="nav-link"
+                >
+                    <span class="nav-icon">◎</span>
+                    Profile
+                </a>
+
+                <a
+                    href="settings.html"
+                    class="nav-link"
+                >
+                    <span class="nav-icon">⚙</span>
+                    Settings
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="user-mini">
+
+                <div
+                    class="user-avatar"
+                    id="userAvatar"
+                >
+                    U
+                </div>
+
+                <div class="user-info">
+
+                    <div
+                        class="user-name"
+                        id="userName"
+                    >
+                        User
+                    </div>
+
+                    <div
+                        class="user-email"
+                        id="userEmail"
+                    >
+                        Loading...
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button
+                class="logout-btn"
+                id="logoutBtn"
+            >
+                Sign out
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div
+                style="
+                    display:flex;
+                    align-items:center;
+                    gap:12px;
+                "
+            >
+
+                <button
+                    class="mobile-menu"
+                    id="mobileMenu"
+                >
+                    ☰
+                </button>
+
+                <div class="page-heading">
+
+                    <h1>
+                        Command Center
+                    </h1>
+
+                    <p>
+                        Monitor your CloudCalc Pro calculation workspace.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- COMMAND CENTER -->
+
+        <section class="command-card">
+
+            <div class="command-content">
+
+                <div class="eyebrow">
+                    CLOUDCALC PRO / LIVE
+                </div>
+
+                <h2>
+                    Make the next number useful.
+                </h2>
+
+                <p>
+                    Your calculation workspace is connected
+                    to Supabase. Review your latest activity,
+                    statistics and calculation signals here.
+                </p>
+
+            </div>
+
+
+            <div class="core-scene">
+
+                <div class="core-ring"></div>
+                <div class="core-ring two"></div>
+                <div class="core-ring three"></div>
+
+                <div class="core-center">
+
+                    <span
+                        class="core-number"
+                        id="coreNumber"
+                    >
+                        0
+                    </span>
+
+                    <span class="core-label">
+                        LIVE RESULT
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- STATS -->
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Calculations
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalCalculations"
+                >
+                    0
+                </div>
+
+                <div class="stat-sub">
+                    Total saved
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Latest Result
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="latestResult"
+                >
+                    0
+                </div>
+
+                <div class="stat-sub">
+                    Most recent output
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Average Output
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="averageResult"
+                >
+                    0
+                </div>
+
+                <div class="stat-sub">
+                    Based on saved results
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Signal Health
+                </div>
+
+                <div
+                    class="stat-value"
+                    style="font-size:20px;"
+                >
+                    ACTIVE
+                </div>
+
+                <div class="stat-sub">
+                    Supabase connection
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- LOWER GRID -->
+
+        <section class="content-grid">
+
+
+            <!-- RECENT -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h3>
+                        Recent Calculations
+                    </h3>
+
+                    <a
+                        href="history.html"
+                        class="panel-link"
+                    >
+                        View all →
+                    </a>
+
+                </div>
+
+
+                <div
+                    class="history-list"
+                    id="recentHistory"
+                >
+
+                    <div class="empty">
+                        Loading calculations...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTIVITY -->
+
+            <div class="panel">
+
+                <div class="panel-header">
+
+                    <h3>
+                        Activity Signal
+                    </h3>
+
+                    <span
+                        class="panel-link"
+                        id="activityCount"
+                    >
+                        0 records
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="activity-chart"
+                    id="activityChart"
+                >
+
+                    <div
+                        class="empty"
+                        style="width:100%;"
+                    >
+                        Loading...
+                    </div>
+
+                </div>
+
+
+                <div class="health">
+
+                    <div class="health-dot"></div>
+
+                    <span>
+                        Supabase data layer operational
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Supabase Client -->
+<script src="../js/supabaseClient.js"></script>
+
+<!-- Dashboard JavaScript -->
+<script src="../js/pages/dashboard.js"></script>
+</body>
+</html>

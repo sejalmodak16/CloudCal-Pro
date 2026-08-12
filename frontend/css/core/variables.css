@@ -1,0 +1,319 @@
+/* =========================================================
+   CLOUDCALC PRO
+   DESIGN SYSTEM — VARIABLES
+   Version 1.0
+========================================================= */
+
+:root {
+
+    /* =====================================================
+       BRAND
+    ====================================================== */
+
+    --cc-primary: #6c63ff;
+    --cc-primary-light: #8b84ff;
+    --cc-primary-dark: #5148e5;
+
+    --cc-accent: #00d4ff;
+    --cc-accent-light: #55e7ff;
+
+    --cc-success: #22c55e;
+    --cc-warning: #f59e0b;
+    --cc-danger: #ef4444;
+
+
+    /* =====================================================
+       BACKGROUND
+    ====================================================== */
+
+    --cc-bg: #050816;
+    --cc-bg-secondary: #080d1f;
+    --cc-bg-tertiary: #0d1328;
+
+    --cc-surface: rgba(255, 255, 255, 0.055);
+    --cc-surface-hover: rgba(255, 255, 255, 0.085);
+
+    --cc-surface-solid: #10162b;
+
+
+    /* =====================================================
+       TEXT
+    ====================================================== */
+
+    --cc-text-primary: #f8fafc;
+    --cc-text-secondary: #b8c1d9;
+    --cc-text-muted: #7f8aa8;
+    --cc-text-disabled: #515b75;
+
+
+    /* =====================================================
+       BORDERS
+    ====================================================== */
+
+    --cc-border: rgba(255, 255, 255, 0.10);
+    --cc-border-light: rgba(255, 255, 255, 0.16);
+    --cc-border-primary: rgba(108, 99, 255, 0.35);
+
+
+    /* =====================================================
+       GRADIENTS
+    ====================================================== */
+
+    --cc-gradient-primary:
+        linear-gradient(
+            135deg,
+            #6c63ff 0%,
+            #8b5cf6 50%,
+            #00d4ff 100%
+        );
+
+    --cc-gradient-hero:
+        radial-gradient(
+            circle at 70% 35%,
+            rgba(108, 99, 255, 0.18),
+            transparent 45%
+        );
+
+    --cc-gradient-glow:
+        linear-gradient(
+            135deg,
+            rgba(108, 99, 255, 0.35),
+            rgba(0, 212, 255, 0.18)
+        );
+
+
+    /* =====================================================
+       GLASSMORPHISM
+    ====================================================== */
+
+    --cc-glass-bg: rgba(12, 18, 38, 0.58);
+    --cc-glass-bg-light: rgba(255, 255, 255, 0.065);
+
+    --cc-glass-border:
+        1px solid rgba(255, 255, 255, 0.11);
+
+    --cc-glass-blur: blur(24px);
+    --cc-glass-blur-heavy: blur(40px);
+
+
+    /* =====================================================
+       3D DEPTH
+    ====================================================== */
+
+    --cc-depth-sm:
+        0 8px 24px rgba(0, 0, 0, 0.22);
+
+    --cc-depth-md:
+        0 18px 50px rgba(0, 0, 0, 0.32);
+
+    --cc-depth-lg:
+        0 30px 90px rgba(0, 0, 0, 0.45);
+
+    --cc-depth-3d:
+        0 40px 100px rgba(0, 0, 0, 0.50);
+
+
+    /* =====================================================
+       GLOW
+    ====================================================== */
+
+    --cc-glow-primary:
+        0 0 35px rgba(108, 99, 255, 0.32);
+
+    --cc-glow-accent:
+        0 0 35px rgba(0, 212, 255, 0.25);
+
+    --cc-glow-strong:
+        0 0 70px rgba(108, 99, 255, 0.28);
+
+
+    /* =====================================================
+       SPACING
+    ====================================================== */
+
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-20: 5rem;
+    --space-24: 6rem;
+    --space-32: 8rem;
+
+
+    /* =====================================================
+       BORDER RADIUS
+    ====================================================== */
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --radius-2xl: 36px;
+    --radius-pill: 999px;
+
+
+    /* =====================================================
+       LAYOUT
+    ====================================================== */
+
+    --container-width: 1280px;
+    --container-padding: 32px;
+
+    --navbar-height: 82px;
+
+    --section-padding:
+        clamp(80px, 10vw, 150px);
+
+
+    /* =====================================================
+       TYPOGRAPHY
+    ====================================================== */
+
+    --font-primary:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    --font-mono:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+
+
+    /* =====================================================
+       FONT SIZES
+    ====================================================== */
+
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.125rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 1.5rem;
+    --text-3xl: 1.875rem;
+    --text-4xl: 2.25rem;
+    --text-5xl: 3rem;
+    --text-6xl: 4rem;
+    --text-hero: clamp(3.5rem, 8vw, 7.5rem);
+
+
+    /* =====================================================
+       TRANSITIONS
+    ====================================================== */
+
+    --transition-fast:
+        150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    --transition-normal:
+        300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    --transition-smooth:
+        500ms cubic-bezier(0.22, 1, 0.36, 1);
+
+    --transition-spring:
+        700ms cubic-bezier(0.16, 1, 0.3, 1);
+
+
+    /* =====================================================
+       Z-INDEX SYSTEM
+    ====================================================== */
+
+    --z-background: -10;
+    --z-base: 0;
+    --z-content: 10;
+    --z-overlay: 50;
+    --z-navbar: 100;
+    --z-modal: 500;
+    --z-toast: 1000;
+
+
+    /* =====================================================
+       3D SETTINGS
+    ====================================================== */
+
+    --perspective: 1600px;
+
+    --tilt-max: 6deg;
+
+    --parallax-strength: 0.035;
+
+    --webgl-opacity: 1;
+
+
+    /* =====================================================
+       ANIMATION
+    ====================================================== */
+
+    --ease-out:
+        cubic-bezier(0.22, 1, 0.36, 1);
+
+    --ease-in-out:
+        cubic-bezier(0.65, 0, 0.35, 1);
+
+
+    /* =====================================================
+       PERFORMANCE
+    ====================================================== */
+
+    --gpu-transform:
+        translate3d(0, 0, 0);
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    :root {
+
+        --transition-fast: none;
+        --transition-normal: none;
+        --transition-smooth: none;
+        --transition-spring: none;
+
+    }
+
+}
+
+
+/* =========================================================
+   LIGHT THEME BASE VARIABLES
+========================================================= */
+
+[data-theme="light"] {
+
+    --cc-bg: #f5f7fb;
+    --cc-bg-secondary: #ffffff;
+    --cc-bg-tertiary: #edf1f8;
+
+    --cc-surface: rgba(255, 255, 255, 0.72);
+    --cc-surface-hover: rgba(255, 255, 255, 0.92);
+
+    --cc-surface-solid: #ffffff;
+
+    --cc-text-primary: #101426;
+    --cc-text-secondary: #4d5870;
+    --cc-text-muted: #737e96;
+    --cc-text-disabled: #a3acc0;
+
+    --cc-border: rgba(15, 23, 42, 0.09);
+    --cc-border-light: rgba(15, 23, 42, 0.14);
+
+    --cc-glass-bg: rgba(255, 255, 255, 0.68);
+
+    --cc-glass-border:
+        1px solid rgba(15, 23, 42, 0.08);
+
+}

@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="CloudCalc Pro Analytics"
+    >
+
+    <title>Analytics | CloudCalc Pro</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/responsive.css"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+
+            left: 18px;
+            top: 18px;
+            bottom: 18px;
+
+            width: 245px;
+
+            display: flex;
+            flex-direction: column;
+
+            padding: 22px 15px;
+
+            border:
+                1px solid rgba(95,160,255,.22);
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(15,28,58,.94),
+                    rgba(5,12,28,.97)
+                );
+
+            box-shadow:
+                0 30px 70px rgba(0,0,0,.45),
+                inset 0 1px 0 rgba(255,255,255,.06);
+
+            backdrop-filter: blur(20px);
+
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+
+            padding: 4px 8px 25px;
+
+            border-bottom:
+                1px solid rgba(100,140,200,.10);
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #3182ff,
+                    #6145ed
+                );
+
+            color: white;
+
+            font-weight: 900;
+        }
+
+        .brand-name {
+            color: white;
+
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .brand-name span {
+            color: var(--cyan);
+        }
+
+        .nav-section {
+            margin-top: 25px;
+        }
+
+        .nav-title {
+            padding: 0 10px 9px;
+
+            color: #536582;
+
+            font-size: 9px;
+            font-weight: 800;
+
+            letter-spacing: 1.3px;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            min-height: 44px;
+
+            padding: 0 12px;
+
+            border:
+                1px solid transparent;
+
+            border-radius: 11px;
+
+            color: var(--text-soft);
+
+            font-size: 12px;
+
+            text-decoration: none;
+
+            transition: .25s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+
+            background:
+                rgba(49,130,255,.07);
+
+            border-color:
+                rgba(95,160,255,.12);
+
+            transform:
+                translateX(3px);
+        }
+
+        .nav-link.active {
+            color: white;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(49,130,255,.17),
+                    rgba(96,72,237,.08)
+                );
+
+            border-color:
+                rgba(95,160,255,.22);
+
+            box-shadow:
+                inset 3px 0 0 #3182ff;
+        }
+
+        .nav-icon {
+            width: 28px;
+            height: 28px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 8px;
+
+            background:
+                rgba(100,140,200,.07);
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+        }
+
+        .user-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 11px;
+            margin-bottom: 8px;
+
+            border:
+                1px solid rgba(100,140,200,.12);
+
+            border-radius: 12px;
+
+            background:
+                rgba(100,140,200,.035);
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #3182ff,
+                    #6548ed
+                );
+
+            color: white;
+
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .user-info {
+            min-width: 0;
+        }
+
+        .user-name,
+        .user-email {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-name {
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .user-email {
+            color: #647696;
+            font-size: 9px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            height: 38px;
+
+            border:
+                1px solid rgba(255,90,110,.12);
+
+            border-radius: 10px;
+
+            background:
+                rgba(255,70,90,.035);
+
+            color: #c77b89;
+
+            cursor: pointer;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main-content {
+            min-height: 100vh;
+
+            margin-left: 281px;
+
+            padding:
+                30px 32px 50px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .mobile-menu {
+            display: none;
+
+            width: 40px;
+            height: 40px;
+
+            border:
+                1px solid rgba(100,140,200,.18);
+
+            border-radius: 10px;
+
+            background:
+                rgba(15,28,58,.7);
+
+            color: white;
+
+            cursor: pointer;
+        }
+
+        .page-heading h1 {
+            margin: 0 0 5px;
+
+            color: white;
+
+            font-size: 30px;
+        }
+
+        .page-heading p {
+            margin: 0;
+
+            color: var(--text-soft);
+
+            font-size: 12px;
+        }
+
+        /* ================= KPI ================= */
+
+        .kpi-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4,1fr);
+
+            gap: 15px;
+        }
+
+        .kpi {
+            padding: 21px;
+
+            min-height: 125px;
+
+            border:
+                1px solid rgba(95,160,255,.15);
+
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(16,31,63,.80),
+                    rgba(5,12,28,.93)
+                );
+
+            box-shadow:
+                0 20px 45px rgba(0,0,0,.22);
+
+            transition: .25s ease;
+        }
+
+        .kpi:hover {
+            transform:
+                translateY(-5px);
+        }
+
+        .kpi-label {
+            color: #637696;
+
+            font-size: 9px;
+
+            letter-spacing: 1px;
+
+            text-transform: uppercase;
+        }
+
+        .kpi-value {
+            margin-top: 12px;
+
+            color: white;
+
+            font-size: 27px;
+            font-weight: 900;
+        }
+
+        .kpi-sub {
+            margin-top: 5px;
+
+            color: #536582;
+
+            font-size: 9px;
+        }
+
+        /* ================= PANELS ================= */
+
+        .analytics-grid {
+            display: grid;
+
+            grid-template-columns:
+                1.35fr .8fr;
+
+            gap: 18px;
+
+            margin-top: 18px;
+        }
+
+        .panel {
+            padding: 22px;
+
+            border:
+                1px solid rgba(95,160,255,.15);
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(16,31,63,.78),
+                    rgba(5,12,28,.93)
+                );
+
+            box-shadow:
+                0 25px 55px rgba(0,0,0,.22);
+        }
+
+        .panel-title {
+            margin: 0 0 4px;
+
+            color: white;
+
+            font-size: 14px;
+        }
+
+        .panel-description {
+            margin: 0 0 20px;
+
+            color: #637696;
+
+            font-size: 9px;
+        }
+
+        /* ================= CHART ================= */
+
+        .chart {
+            height: 250px;
+
+            display: flex;
+            align-items: flex-end;
+
+            gap: 9px;
+
+            padding:
+                10px 4px 0;
+        }
+
+        .chart-bar {
+            position: relative;
+
+            flex: 1;
+
+            min-width: 10px;
+
+            height: var(--height);
+
+            min-height: 8px;
+
+            border-radius:
+                7px 7px 2px 2px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #3182ff,
+                    #6548ed
+                );
+
+            box-shadow:
+                0 0 18px rgba(49,130,255,.14);
+
+            transition:
+                height .5s ease;
+        }
+
+        .chart-bar:hover {
+            filter: brightness(1.25);
+        }
+
+        .chart-label {
+            position: absolute;
+
+            left: 50%;
+            bottom: -20px;
+
+            transform:
+                translateX(-50%);
+
+            color: #536582;
+
+            font-size: 8px;
+
+            white-space: nowrap;
+        }
+
+        /* ================= OPERATIONS ================= */
+
+        .operation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .operation-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 13px;
+
+            border:
+                1px solid rgba(100,140,200,.08);
+
+            border-radius: 11px;
+
+            background:
+                rgba(100,140,200,.035);
+        }
+
+        .operation-icon {
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 9px;
+
+            background:
+                rgba(49,130,255,.10);
+
+            color: #62cfff;
+
+            font-weight: 900;
+        }
+
+        .operation-name {
+            flex: 1;
+
+            color: #dce6f7;
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .operation-count {
+            color: #5797ff;
+
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* ================= INSIGHTS ================= */
+
+        .insight-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3,1fr);
+
+            gap: 15px;
+
+            margin-top: 18px;
+        }
+
+        .insight {
+            padding: 20px;
+
+            border:
+                1px solid rgba(95,160,255,.13);
+
+            border-radius: 18px;
+
+            background:
+                rgba(100,140,200,.035);
+        }
+
+        .insight-title {
+            color: #637696;
+
+            font-size: 9px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+        .insight-value {
+            margin-top: 10px;
+
+            color: white;
+
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .insight-text {
+            margin-top: 6px;
+
+            color: #536582;
+
+            font-size: 9px;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media(max-width:1100px) {
+
+            .kpi-grid {
+                grid-template-columns:
+                    repeat(2,1fr);
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .insight-grid {
+                grid-template-columns:
+                    repeat(2,1fr);
+            }
+
+        }
+
+        @media(max-width:850px) {
+
+            .sidebar {
+                transform:
+                    translateX(-120%);
+
+                transition:
+                    transform .3s ease;
+            }
+
+            .sidebar.open {
+                transform:
+                    translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+
+                padding:
+                    22px 18px 35px;
+            }
+
+            .mobile-menu {
+                display: grid;
+
+                place-items: center;
+            }
+
+        }
+
+        @media(max-width:600px) {
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .insight-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart {
+                height: 210px;
+            }
+
+            .page-heading h1 {
+                font-size: 24px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="background-grid"></div>
+
+    <div class="glow glow-blue"></div>
+    <div class="glow glow-purple"></div>
+    <div class="glow glow-cyan"></div>
+
+
+    <!-- SIDEBAR -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                C
+            </div>
+
+            <div class="brand-name">
+                CloudCalc <span>PRO</span>
+            </div>
+
+        </div>
+
+
+        <div class="nav-section">
+
+            <div class="nav-title">
+                WORKSPACE
+            </div>
+
+            <nav class="nav-list">
+
+                <a
+                    href="dashboard.html"
+                    class="nav-link"
+                >
+                    <span class="nav-icon">◈</span>
+                    Dashboard
+                </a>
+
+                <a
+                    href="calculator.html"
+                    class="nav-link"
+                >
+                    <span class="nav-icon">+</span>
+                    Calculator
+                </a>
+
+                <a
+                    href="history.html"
+                    class="nav-link"
+                >
+                    <span class="nav-icon">↺</span>
+                    History
+                </a>
+
+                <a
+                    href="analytics.html"
+                    class="nav-link active"
+                >
+                    <span class="nav-icon">◒</span>
+                    Analytics
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="nav-section">
+
+            <div class="nav-title">
+                ACCOUNT
+            </div>
+
+            <nav class="nav-list">
+
+                <a
+                    href="profile.html"
+                    class="nav-link"
+                >
+                    <span class="nav-icon">◎</span>
+                    Profile
+                </a>
+
+                <a
+                    href="settings.html"
+                    class="nav-link"
+                >
+                    <span class="nav-icon">⚙</span>
+                    Settings
+                </a>
+
+            </nav>
+
+        </div>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="user-mini">
+
+                <div
+                    class="user-avatar"
+                    id="userAvatar"
+                >
+                    U
+                </div>
+
+                <div class="user-info">
+
+                    <div
+                        class="user-name"
+                        id="userName"
+                    >
+                        User
+                    </div>
+
+                    <div
+                        class="user-email"
+                        id="userEmail"
+                    >
+                        Loading...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="logout-btn"
+                id="logoutBtn"
+            >
+                Sign out
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div
+                style="
+                    display:flex;
+                    align-items:center;
+                    gap:12px;
+                "
+            >
+
+                <button
+                    class="mobile-menu"
+                    id="mobileMenu"
+                >
+                    ☰
+                </button>
+
+                <div class="page-heading">
+
+                    <h1>
+                        Analytics
+                    </h1>
+
+                    <p>
+                        Understand your CloudCalc Pro calculation activity.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- KPIs -->
+
+        <section class="kpi-grid">
+
+            <div class="kpi">
+
+                <div class="kpi-label">
+                    Total Calculations
+                </div>
+
+                <div
+                    class="kpi-value"
+                    id="totalCalculations"
+                >
+                    0
+                </div>
+
+                <div class="kpi-sub">
+                    Saved to Supabase
+                </div>
+
+            </div>
+
+
+            <div class="kpi">
+
+                <div class="kpi-label">
+                    Average Result
+                </div>
+
+                <div
+                    class="kpi-value"
+                    id="averageResult"
+                >
+                    0
+                </div>
+
+                <div class="kpi-sub">
+                    Across numeric results
+                </div>
+
+            </div>
+
+
+            <div class="kpi">
+
+                <div class="kpi-label">
+                    Highest Result
+                </div>
+
+                <div
+                    class="kpi-value"
+                    id="highestResult"
+                >
+                    0
+                </div>
+
+                <div class="kpi-sub">
+                    Maximum saved output
+                </div>
+
+            </div>
+
+
+            <div class="kpi">
+
+                <div class="kpi-label">
+                    Latest Result
+                </div>
+
+                <div
+                    class="kpi-value"
+                    id="latestResult"
+                >
+                    0
+                </div>
+
+                <div class="kpi-sub">
+                    Most recent calculation
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CHART + OPERATIONS -->
+
+        <section class="analytics-grid">
+
+
+            <div class="panel">
+
+                <h3 class="panel-title">
+                    Calculation Activity
+                </h3>
+
+                <p class="panel-description">
+                    Number of saved calculations by day.
+                </p>
+
+
+                <div
+                    class="chart"
+                    id="activityChart"
+                >
+
+                    <div
+                        style="
+                            width:100%;
+                            text-align:center;
+                            color:#637696;
+                            font-size:11px;
+                        "
+                    >
+                        Loading analytics...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <h3 class="panel-title">
+                    Operations
+                </h3>
+
+                <p class="panel-description">
+                    Operations detected in your saved calculations.
+                </p>
+
+
+                <div
+                    class="operation-list"
+                    id="operationList"
+                >
+
+                    <div
+                        style="
+                            color:#637696;
+                            font-size:10px;
+                        "
+                    >
+                        Loading...
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- INSIGHTS -->
+
+        <section class="insight-grid">
+
+            <div class="insight">
+
+                <div class="insight-title">
+                    Most Used
+                </div>
+
+                <div
+                    class="insight-value"
+                    id="mostUsedOperation"
+                >
+                    —
+                </div>
+
+                <div class="insight-text">
+                    Most frequent operation.
+                </div>
+
+            </div>
+
+
+            <div class="insight">
+
+                <div class="insight-title">
+                    Active Days
+                </div>
+
+                <div
+                    class="insight-value"
+                    id="activeDays"
+                >
+                    0
+                </div>
+
+                <div class="insight-text">
+                    Days containing calculations.
+                </div>
+
+            </div>
+
+
+            <div class="insight">
+
+                <div class="insight-title">
+                    Data Status
+                </div>
+
+                <div
+                    class="insight-value"
+                    style="color:#54dfae;"
+                >
+                    SYNCED
+                </div>
+
+                <div class="insight-text">
+                    Data loaded from Supabase.
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- SUPABASE -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../js/supabaseClient.js"></script>
+
+<script src="../js/pages/analytics.js"></script>
+</body>
+</html>

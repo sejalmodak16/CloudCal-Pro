@@ -1,0 +1,233 @@
+/* =========================================================
+   CLOUDCALC PRO
+   WEBGL FALLBACK SYSTEM
+========================================================= */
+
+
+/* =========================================================
+   DEFAULT FALLBACK STATE
+========================================================= */
+
+.webgl-fallback {
+    position: absolute;
+
+    inset: 0;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    pointer-events: none;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   FALLBACK ORBS
+========================================================= */
+
+.fallback-orb {
+    position: absolute;
+
+    width: 260px;
+    height: 260px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            rgba(255, 255, 255, 0.25),
+            rgba(108, 99, 255, 0.22) 25%,
+            rgba(108, 99, 255, 0.06) 60%,
+            transparent 72%
+        );
+
+    box-shadow:
+        inset -30px -30px 70px rgba(0, 0, 0, 0.35),
+        0 0 80px rgba(108, 99, 255, 0.18);
+
+    filter:
+        blur(0.2px);
+
+    transform:
+        translateZ(0);
+
+    animation:
+        fallbackFloat 7s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   ORBITS
+========================================================= */
+
+.fallback-orbit {
+    position: absolute;
+
+    border:
+        1px solid rgba(108, 99, 255, 0.20);
+
+    border-radius: 50%;
+
+    transform:
+        rotateX(65deg);
+
+    animation:
+        fallbackOrbit 18s linear infinite;
+}
+
+
+.orbit-one {
+    width: 470px;
+    height: 470px;
+}
+
+
+.orbit-two {
+    width: 360px;
+    height: 360px;
+
+    border-color:
+        rgba(0, 212, 255, 0.16);
+
+    animation-duration:
+        13s;
+
+    animation-direction:
+        reverse;
+}
+
+
+/* =========================================================
+   FALLBACK MODE
+========================================================= */
+
+.webgl-disabled .webgl-canvas {
+    display: none;
+}
+
+
+.webgl-disabled .webgl-fallback {
+    display: flex;
+}
+
+
+/* =========================================================
+   CSS 3D HERO
+========================================================= */
+
+.webgl-disabled .calculator-fallback {
+    display: block;
+
+    transform:
+        perspective(1200px)
+        rotateX(7deg)
+        rotateY(-8deg)
+        translateZ(40px);
+
+    animation:
+        fallbackCalculator 6s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   FALLBACK ANIMATIONS
+========================================================= */
+
+@keyframes fallbackFloat {
+
+    0%,
+    100% {
+        transform:
+            translate3d(0, 0, 0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translate3d(0, -18px, 0)
+            scale(1.04);
+    }
+
+}
+
+
+@keyframes fallbackOrbit {
+
+    from {
+        transform:
+            rotateX(65deg)
+            rotateZ(0deg);
+    }
+
+    to {
+        transform:
+            rotateX(65deg)
+            rotateZ(360deg);
+    }
+
+}
+
+
+@keyframes fallbackCalculator {
+
+    0%,
+    100% {
+        transform:
+            perspective(1200px)
+            rotateX(7deg)
+            rotateY(-8deg)
+            translate3d(0, 0, 40px);
+    }
+
+    50% {
+        transform:
+            perspective(1200px)
+            rotateX(9deg)
+            rotateY(-4deg)
+            translate3d(0, -12px, 55px);
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE FALLBACK
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .fallback-orb {
+        width: 190px;
+        height: 190px;
+    }
+
+    .orbit-one {
+        width: 340px;
+        height: 340px;
+    }
+
+    .orbit-two {
+        width: 260px;
+        height: 260px;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .fallback-orb,
+    .fallback-orbit,
+    .webgl-disabled .calculator-fallback {
+        animation: none;
+    }
+
+}
