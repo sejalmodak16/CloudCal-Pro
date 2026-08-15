@@ -4,6 +4,8 @@
    Supabase Authentication
 ========================================================= */
 
+"use strict";
+
 
 /* =========================================================
    SUPABASE CHECK
@@ -48,10 +50,9 @@ async function loadProfile() {
         const {
             data,
             error
-        } =
-            await window.supabaseClient
-                .auth
-                .getUser();
+        } = await window.supabaseClient
+            .auth
+            .getUser();
 
 
         if (error) {
@@ -64,14 +65,10 @@ async function loadProfile() {
 
 
         /* -----------------------------------------
-           USER NOT LOGGED IN
+           LOGIN CHECK
         ----------------------------------------- */
 
         if (!user) {
-
-            console.log(
-                "No logged-in user."
-            );
 
             window.location.href =
                 "login.html";
@@ -151,15 +148,19 @@ async function loadProfile() {
 
 
         /* -----------------------------------------
-           SIDEBAR USER NAME
+           SIDEBAR NAME
         ----------------------------------------- */
+
+        const displayName =
+            fullName ||
+            user.email?.split("@")[0] ||
+            "User";
+
 
         if (userName) {
 
             userName.textContent =
-                fullName ||
-                user.email?.split("@")[0] ||
-                "User";
+                displayName;
         }
 
 
@@ -179,12 +180,6 @@ async function loadProfile() {
         ----------------------------------------- */
 
         if (userAvatar) {
-
-            const displayName =
-                fullName ||
-                user.email ||
-                "U";
-
 
             userAvatar.textContent =
                 displayName
@@ -235,7 +230,7 @@ async function saveProfile() {
         if (!fullNameInput) {
 
             console.error(
-                "fullName input not found."
+                "CloudCalc Pro: Full name input not found."
             );
 
             return;
@@ -245,6 +240,10 @@ async function saveProfile() {
         const fullName =
             fullNameInput.value.trim();
 
+
+        /* -----------------------------------------
+           VALIDATION
+        ----------------------------------------- */
 
         if (!fullName) {
 
@@ -263,19 +262,22 @@ async function saveProfile() {
         );
 
 
+        /* -----------------------------------------
+           UPDATE SUPABASE USER
+        ----------------------------------------- */
+
         const {
             data,
             error
-        } =
-            await window.supabaseClient
-                .auth
-                .updateUser({
+        } = await window.supabaseClient
+            .auth
+            .updateUser({
 
-                    data: {
-                        full_name: fullName
-                    }
+                data: {
+                    full_name: fullName
+                }
 
-                });
+            });
 
 
         if (error) {
@@ -284,13 +286,13 @@ async function saveProfile() {
 
 
         console.log(
-            "Profile updated:",
+            "CloudCalc Pro: Profile updated:",
             data?.user
         );
 
 
         /* -----------------------------------------
-           UPDATE DISPLAY
+           UPDATE SIDEBAR
         ----------------------------------------- */
 
         const userName =
@@ -329,7 +331,7 @@ async function saveProfile() {
     catch (error) {
 
         console.error(
-            "Profile update error:",
+            "CloudCalc Pro: Profile update error:",
             error
         );
 
@@ -361,10 +363,9 @@ async function logout() {
 
         const {
             error
-        } =
-            await window.supabaseClient
-                .auth
-                .signOut();
+        } = await window.supabaseClient
+            .auth
+            .signOut();
 
 
         if (error) {
@@ -379,7 +380,7 @@ async function logout() {
     catch (error) {
 
         console.error(
-            "Logout error:",
+            "CloudCalc Pro: Logout error:",
             error
         );
 
@@ -392,12 +393,21 @@ async function logout() {
 
 
 /* =========================================================
-   SAVE BUTTON
+   INITIALIZE PROFILE
 ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     function () {
+
+        console.log(
+            "CloudCalc Pro: Profile initialized."
+        );
+
+
+        /* -----------------------------------------
+           SAVE BUTTON
+        ----------------------------------------- */
 
         const saveButton =
             document.getElementById(
@@ -415,6 +425,25 @@ document.addEventListener(
 
 
         /* -----------------------------------------
+           LOGOUT BUTTON
+        ----------------------------------------- */
+
+        const logoutButton =
+            document.getElementById(
+                "logoutBtn"
+            );
+
+
+        if (logoutButton) {
+
+            logoutButton.addEventListener(
+                "click",
+                logout
+            );
+        }
+
+
+        /* -----------------------------------------
            LOAD PROFILE
         ----------------------------------------- */
 
@@ -425,7 +454,7 @@ document.addEventListener(
 
 
 /* =========================================================
-   MAKE FUNCTIONS AVAILABLE
+   GLOBAL FUNCTIONS
 ========================================================= */
 
 window.loadProfile =

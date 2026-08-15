@@ -1,7 +1,7 @@
 /* =========================================================
    CLOUDCALC PRO
    DASHBOARD
-   Supabase Data
+   Supabase History Data
 ========================================================= */
 
 "use strict";
@@ -41,16 +41,11 @@ async function getCurrentUser() {
     const {
         data,
         error
-    } =
-        await window.supabaseClient
-            .auth
-            .getUser();
-
+    } = await window.supabaseClient.auth.getUser();
 
     if (error) {
         throw error;
     }
-
 
     return data?.user || null;
 }
@@ -64,8 +59,7 @@ async function loadDashboard() {
 
     try {
 
-        const user =
-            await getCurrentUser();
+        const user = await getCurrentUser();
 
 
         /* -----------------------------------------
@@ -74,8 +68,7 @@ async function loadDashboard() {
 
         if (!user) {
 
-            window.location.href =
-                "login.html";
+            window.location.href = "login.html";
 
             return;
         }
@@ -88,7 +81,6 @@ async function loadDashboard() {
         const metadata =
             user.user_metadata || {};
 
-
         const name =
             metadata.full_name ||
             metadata.name ||
@@ -97,32 +89,21 @@ async function loadDashboard() {
 
 
         const userName =
-            document.getElementById(
-                "userName"
-            );
-
+            document.getElementById("userName");
 
         const userEmail =
-            document.getElementById(
-                "userEmail"
-            );
-
+            document.getElementById("userEmail");
 
         const userAvatar =
-            document.getElementById(
-                "userAvatar"
-            );
+            document.getElementById("userAvatar");
 
 
         if (userName) {
-
-            userName.textContent =
-                name;
+            userName.textContent = name;
         }
 
 
         if (userEmail) {
-
             userEmail.textContent =
                 user.email || "";
         }
@@ -138,34 +119,33 @@ async function loadDashboard() {
 
 
         /* -----------------------------------------
-           LOAD CALCULATIONS
+           LOAD HISTORY
         ----------------------------------------- */
 
         console.log(
-            "CloudCalc Pro: Loading calculations..."
+            "CloudCalc Pro: Loading history..."
         );
 
 
         const {
             data,
             error
-        } =
-            await window.supabaseClient
-                .from("calculations")
-                .select(
-                    "id,user_id,expression,result,operation,created_at"
-                )
-                .eq(
-                    "user_id",
-                    user.id
-                )
-                .order(
-                    "created_at",
-                    {
-                        ascending: false
-                    }
-                )
-                .limit(40);
+        } = await window.supabaseClient
+            .from("history")
+            .select(
+                "id,user_id,expression,result,operation,created_at"
+            )
+            .eq(
+                "user_id",
+                user.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            )
+            .limit(40);
 
 
         if (error) {
@@ -174,11 +154,13 @@ async function loadDashboard() {
 
 
         dashboardData =
-            data || [];
+            Array.isArray(data)
+                ? data
+                : [];
 
 
         console.log(
-            "CloudCalc Pro: Calculations loaded:",
+            "CloudCalc Pro: History loaded:",
             dashboardData.length
         );
 
@@ -215,7 +197,6 @@ async function loadDashboard() {
                 </div>
             `;
         }
-
     }
 }
 
@@ -230,24 +211,21 @@ function updateDashboard() {
         dashboardData.length;
 
 
-    const totalElement =
-        document.getElementById(
-            "totalCalculations"
-        );
+    /* -----------------------------------------
+       TOTAL CALCULATIONS
+    ----------------------------------------- */
 
-
-    if (totalElement) {
-
-        totalElement.textContent =
-            total;
-    }
+    setText(
+        "totalCalculations",
+        total
+    );
 
 
     /* -----------------------------------------
        NO CALCULATIONS
     ----------------------------------------- */
 
-    if (!total) {
+    if (total === 0) {
 
         setText(
             "latestResult",
@@ -282,7 +260,7 @@ function updateDashboard() {
        LATEST RESULT
     ----------------------------------------- */
 
-    const latest =
+    const latestResult =
         Number(
             dashboardData[0]?.result
         );
@@ -290,18 +268,18 @@ function updateDashboard() {
 
     setText(
         "latestResult",
-        formatNumber(latest)
+        formatNumber(latestResult)
     );
 
 
     setText(
         "coreNumber",
-        formatNumber(latest)
+        formatNumber(latestResult)
     );
 
 
     /* -----------------------------------------
-       AVERAGE RESULT
+       NUMERIC RESULTS
     ----------------------------------------- */
 
     const numbers =
@@ -316,8 +294,12 @@ function updateDashboard() {
             );
 
 
+    /* -----------------------------------------
+       AVERAGE RESULT
+    ----------------------------------------- */
+
     const average =
-        numbers.length
+        numbers.length > 0
             ? numbers.reduce(
                 (sum, value) =>
                     sum + value,
@@ -331,6 +313,10 @@ function updateDashboard() {
         formatNumber(average)
     );
 
+
+    /* -----------------------------------------
+       ACTIVITY
+    ----------------------------------------- */
 
     setText(
         "activityCount",
@@ -362,15 +348,16 @@ function renderRecent() {
 
 
     /* -----------------------------------------
-       EMPTY
+       EMPTY HISTORY
     ----------------------------------------- */
 
-    if (!dashboardData.length) {
+    if (dashboardData.length === 0) {
 
         container.innerHTML = `
             <div class="empty">
                 No calculations saved yet.
                 <br>
+
                 <a
                     href="calculator.html"
                     style="color:#5797ff;"
@@ -387,66 +374,113 @@ function renderRecent() {
     container.innerHTML = "";
 
 
+    /* -----------------------------------------
+       SHOW LATEST 6
+    ----------------------------------------- */
+
     dashboardData
         .slice(0, 6)
-        .forEach(
-            item => {
+        .forEach(item => {
 
-                const row =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                row.className =
-                    "history-item";
-
-
-                row.innerHTML = `
-
-                    <div>
-
-                        <div
-                            class="history-expression"
-                            title="${escapeHTML(
-                                item.expression
-                            )}"
-                        >
-                            ${escapeHTML(
-                                item.expression
-                            )}
-                        </div>
-
-                        <div class="history-date">
-                            ${formatDate(
-                                item.created_at
-                            )}
-                        </div>
-
-                    </div>
-
-                    <div class="history-operation">
-                        ${escapeHTML(
-                            item.operation ||
-                            "calculation"
-                        )}
-                    </div>
-
-                    <div class="history-result">
-                        ${formatNumber(
-                            item.result
-                        )}
-                    </div>
-
-                `;
-
-
-                container.appendChild(
-                    row
+            const row =
+                document.createElement(
+                    "div"
                 );
 
-            }
-        );
+
+            row.className =
+                "history-item";
+
+
+            row.innerHTML = `
+
+                <div>
+
+                    <div
+                        class="history-expression"
+                        title="${escapeHTML(
+                            item.expression
+                        )}"
+                    >
+                        ${escapeHTML(
+                            item.expression
+                        )}
+                    </div>
+
+                    <div class="history-date">
+                        ${formatDate(
+                            item.created_at
+                        )}
+                    </div>
+
+                </div>
+
+                <div class="history-operation">
+                    ${escapeHTML(
+                        item.operation ||
+                        detectOperation(
+                            item.expression
+                        )
+                    )}
+                </div>
+
+                <div class="history-result">
+                    ${formatNumber(
+                        item.result
+                    )}
+                </div>
+
+            `;
+
+
+            container.appendChild(row);
+
+        });
+}
+
+
+/* =========================================================
+   DETECT OPERATION
+========================================================= */
+
+function detectOperation(expression) {
+
+    const value =
+        String(expression || "");
+
+
+    if (value.includes("+")) {
+        return "addition";
+    }
+
+
+    if (value.includes("-")) {
+        return "subtraction";
+    }
+
+
+    if (
+        value.includes("*") ||
+        value.includes("×")
+    ) {
+        return "multiplication";
+    }
+
+
+    if (
+        value.includes("/") ||
+        value.includes("÷")
+    ) {
+        return "division";
+    }
+
+
+    if (value.includes("%")) {
+        return "percentage";
+    }
+
+
+    return "calculation";
 }
 
 
@@ -471,7 +505,7 @@ function renderActivity() {
        EMPTY
     ----------------------------------------- */
 
-    if (!dashboardData.length) {
+    if (dashboardData.length === 0) {
 
         chart.innerHTML = `
             <div
@@ -486,31 +520,32 @@ function renderActivity() {
     }
 
 
+    /* -----------------------------------------
+       GROUP BY DAY
+    ----------------------------------------- */
+
     const days = {};
 
 
-    dashboardData.forEach(
-        item => {
+    dashboardData.forEach(item => {
 
-            if (!item.created_at) {
-                return;
-            }
-
-
-            const date =
-                new Date(
-                    item.created_at
-                )
-                    .toLocaleDateString(
-                        "en-CA"
-                    );
-
-
-            days[date] =
-                (days[date] || 0) + 1;
-
+        if (!item.created_at) {
+            return;
         }
-    );
+
+
+        const date =
+            new Date(
+                item.created_at
+            ).toLocaleDateString(
+                "en-CA"
+            );
+
+
+        days[date] =
+            (days[date] || 0) + 1;
+
+    });
 
 
     const values =
@@ -528,46 +563,42 @@ function renderActivity() {
     chart.innerHTML = "";
 
 
-    values.forEach(
-        value => {
+    values.forEach(value => {
 
-            const bar =
-                document.createElement(
-                    "div"
-                );
-
-
-            bar.className =
-                "bar";
-
-
-            const height =
-                Math.max(
-                    12,
-                    (value / max) * 100
-                );
-
-
-            bar.style.setProperty(
-                "--height",
-                `${height}%`
+        const bar =
+            document.createElement(
+                "div"
             );
 
 
-            bar.title =
-                `${value} calculation${
-                    value === 1
-                        ? ""
-                        : "s"
-                }`;
+        bar.className =
+            "bar";
 
 
-            chart.appendChild(
-                bar
+        const height =
+            Math.max(
+                12,
+                (value / max) * 100
             );
 
-        }
-    );
+
+        bar.style.setProperty(
+            "--height",
+            `${height}%`
+        );
+
+
+        bar.title =
+            `${value} calculation${
+                value === 1
+                    ? ""
+                    : "s"
+            }`;
+
+
+        chart.appendChild(bar);
+
+    });
 }
 
 
@@ -613,6 +644,7 @@ async function logout() {
             error
         );
 
+
         alert(
             error?.message ||
             "Unable to logout."
@@ -657,25 +689,21 @@ function setupMobileMenu() {
 
 
     document
-        .querySelectorAll(
-            ".nav-link"
-        )
-        .forEach(
-            link => {
+        .querySelectorAll(".nav-link")
+        .forEach(link => {
 
-                link.addEventListener(
-                    "click",
-                    function () {
+            link.addEventListener(
+                "click",
+                function () {
 
-                        sidebar.classList.remove(
-                            "open"
-                        );
+                    sidebar.classList.remove(
+                        "open"
+                    );
 
-                    }
-                );
+                }
+            );
 
-            }
-        );
+        });
 }
 
 
@@ -702,6 +730,10 @@ function setText(
 }
 
 
+/* =========================================================
+   FORMAT NUMBER
+========================================================= */
+
 function formatNumber(value) {
 
     const number =
@@ -722,6 +754,10 @@ function formatNumber(value) {
 }
 
 
+/* =========================================================
+   FORMAT DATE
+========================================================= */
+
 function formatDate(value) {
 
     if (!value) {
@@ -733,10 +769,11 @@ function formatDate(value) {
         new Date(value);
 
 
-    if (Number.isNaN(
-        date.getTime()
-    )) {
-
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
         return "";
     }
 
@@ -752,6 +789,10 @@ function formatDate(value) {
     );
 }
 
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
 
 function escapeHTML(value) {
 
@@ -782,7 +823,7 @@ function escapeHTML(value) {
 
 
 /* =========================================================
-   START
+   START DASHBOARD
 ========================================================= */
 
 document.addEventListener(

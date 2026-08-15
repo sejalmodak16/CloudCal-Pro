@@ -6,402 +6,508 @@
 
 "use strict";
 
+document.addEventListener("DOMContentLoaded", () => {
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+    console.log("CloudCalc Pro: Register page ready.");
 
-        const form =
-            document.getElementById(
-                "registerForm"
-            );
+    const form = document.getElementById("registerForm");
 
-
-        if (!form) {
-
-            console.error(
-                "CloudCalc Pro: registerForm not found."
-            );
-
-            return;
-        }
-
-
-        console.log(
-            "CloudCalc Pro: Register page ready."
-        );
-
-
-        /* =================================================
-           FORM SUBMIT
-        ================================================= */
-
-        form.addEventListener(
-            "submit",
-            async function (event) {
-
-                event.preventDefault();
-
-
-                /* -----------------------------------------
-                   INPUTS
-                ----------------------------------------- */
-
-                const name =
-                    form.querySelector(
-                        "[name='name'], [name='full_name']"
-                    )?.value.trim() || "";
-
-
-                const email =
-                    form.querySelector(
-                        "[name='email']"
-                    )?.value.trim() || "";
-
-
-                const password =
-                    form.querySelector(
-                        "[name='password']"
-                    )?.value || "";
-
-
-                const confirmPassword =
-                    form.querySelector(
-                        "[name='confirmPassword'], [name='confirm_password']"
-                    )?.value || "";
-
-
-                const button =
-                    form.querySelector(
-                        "button[type='submit']"
-                    );
-
-
-                /* -----------------------------------------
-                   VALIDATION
-                ----------------------------------------- */
-
-                if (!name) {
-
-                    showMessage(
-                        "Please enter your name.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                if (!email) {
-
-                    showMessage(
-                        "Please enter your email address.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                const emailPattern =
-                    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-                if (
-                    !emailPattern.test(email)
-                ) {
-
-                    showMessage(
-                        "Please enter a valid email address.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                if (
-                    password.length < 6
-                ) {
-
-                    showMessage(
-                        "Password must contain at least 6 characters.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                if (
-                    password !== confirmPassword
-                ) {
-
-                    showMessage(
-                        "Passwords do not match.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                /* -----------------------------------------
-                   SUPABASE CHECK
-                ----------------------------------------- */
-
-                if (
-                    !window.supabaseClient
-                ) {
-
-                    console.error(
-                        "CloudCalc Pro: Supabase client missing."
-                    );
-
-
-                    showMessage(
-                        "Supabase connection is not available.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-
-                /* -----------------------------------------
-                   BUTTON LOADING
-                ----------------------------------------- */
-
-                if (button) {
-
-                    button.disabled =
-                        true;
-
-                    button.dataset.originalText =
-                        button.textContent;
-
-                    button.textContent =
-                        "Creating account...";
-
-                }
-
-
-                try {
-
-                    console.log(
-                        "CloudCalc Pro: Creating account..."
-                    );
-
-
-                    /* -------------------------------------
-                       SUPABASE SIGN UP
-                    ------------------------------------- */
-
-                    const {
-                        data,
-                        error
-                    } =
-                        await window.supabaseClient
-                            .auth
-                            .signUp({
-
-                                email:
-                                    email,
-
-                                password:
-                                    password,
-
-                                options: {
-
-                                    data: {
-
-                                        full_name:
-                                            name
-
-                                    }
-
-                                }
-
-                            });
-
-
-                    if (error) {
-
-                        throw error;
-                    }
-
-
-                    console.log(
-                        "CloudCalc Pro: Registration successful.",
-                        data
-                    );
-
-
-                    /* -------------------------------------
-                       SUCCESS
-                    ------------------------------------- */
-
-                    if (data?.session) {
-
-                        showMessage(
-                            "Account created successfully. Redirecting...",
-                            "success"
-                        );
-
-
-                        setTimeout(
-                            function () {
-
-                                window.location.href =
-                                    "dashboard.html";
-
-                            },
-                            800
-                        );
-
-                    }
-                    else {
-
-                        /*
-                         Supabase email confirmation
-                         is enabled.
-                        */
-
-                        showMessage(
-                            "Account created! Please check your email to confirm your account.",
-                            "success"
-                        );
-
-
-                        setTimeout(
-                            function () {
-
-                                window.location.href =
-                                    "login.html";
-
-                            },
-                            1800
-                        );
-
-                    }
-
-                }
-                catch (error) {
-
-                    console.error(
-                        "CloudCalc Pro Registration Error:",
-                        error
-                    );
-
-
-                    let message =
-                        error?.message ||
-                        "Unable to create account.";
-
-
-                    /* -------------------------------------
-                       FRIENDLY SUPABASE ERRORS
-                    ------------------------------------- */
-
-                    if (
-                        message
-                            .toLowerCase()
-                            .includes(
-                                "already registered"
-                            )
-                    ) {
-
-                        message =
-                            "This email is already registered. Please login.";
-
-                    }
-
-
-                    if (
-                        message
-                            .toLowerCase()
-                            .includes(
-                                "user already registered"
-                            )
-                    ) {
-
-                        message =
-                            "This email is already registered. Please login.";
-
-                    }
-
-
-                    showMessage(
-                        message,
-                        "error"
-                    );
-
-
-                    if (button) {
-
-                        button.disabled =
-                            false;
-
-                        button.textContent =
-                            button.dataset.originalText ||
-                            "Create Account";
-
-                    }
-
-                }
-
-            }
-        );
-
-
-    }
-);
-
-
-/* =========================================================
-   MESSAGE
-========================================================= */
-
-function showMessage(
-    message,
-    type = "error"
-) {
-
-    /*
-       If your register page has a formMessage
-       element, use it.
-    */
-
-    const messageElement =
-        document.getElementById(
-            "formMessage"
-        );
-
-
-    if (messageElement) {
-
-        messageElement.textContent =
-            message;
-
-
-        messageElement.className =
-            `form-message show ${type}`;
-
-
+    if (!form) {
+        console.error("CloudCalc Pro: registerForm not found.");
         return;
     }
 
+    const fullNameInput = document.getElementById("fullName");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+    const termsInput = document.getElementById("terms");
 
-    /*
-       If no message element exists,
-       use alert as fallback.
-    */
+    const registerButton =
+        document.getElementById("registerButton");
 
-    if (type === "error") {
+    const formMessage =
+        document.getElementById("formMessage");
 
-        console.error(
-            message
-        );
+    const strengthText =
+        document.getElementById("strengthText");
 
+    const strengthBars = [
+        document.getElementById("strength1"),
+        document.getElementById("strength2"),
+        document.getElementById("strength3"),
+        document.getElementById("strength4")
+    ];
+
+
+    /* =====================================================
+       MESSAGE
+    ===================================================== */
+
+    function showMessage(message, type = "error") {
+
+        if (!formMessage) {
+            console.error(message);
+            return;
+        }
+
+        formMessage.textContent = message;
+
+        formMessage.className =
+            `form-message show ${type}`;
     }
-}
+
+
+    function clearMessage() {
+
+        if (!formMessage) {
+            return;
+        }
+
+        formMessage.textContent = "";
+
+        formMessage.className =
+            "form-message";
+    }
+
+
+    /* =====================================================
+       PASSWORD TOGGLE
+    ===================================================== */
+
+    function setupPasswordToggle(inputId, buttonId) {
+
+        const input =
+            document.getElementById(inputId);
+
+        const button =
+            document.getElementById(buttonId);
+
+        if (!input || !button) {
+            return;
+        }
+
+        button.addEventListener("click", () => {
+
+            const isPassword =
+                input.type === "password";
+
+            input.type =
+                isPassword ? "text" : "password";
+
+            button.textContent =
+                isPassword ? "◉" : "◉";
+
+            button.setAttribute(
+                "aria-label",
+                isPassword
+                    ? "Hide password"
+                    : "Show password"
+            );
+        });
+    }
+
+
+    setupPasswordToggle(
+        "password",
+        "togglePassword"
+    );
+
+    setupPasswordToggle(
+        "confirmPassword",
+        "toggleConfirmPassword"
+    );
+
+
+    /* =====================================================
+       PASSWORD STRENGTH
+    ===================================================== */
+
+    if (passwordInput) {
+
+        passwordInput.addEventListener(
+            "input",
+            () => {
+
+                const password =
+                    passwordInput.value;
+
+                let score = 0;
+
+                if (password.length >= 6) {
+                    score++;
+                }
+
+                if (password.length >= 10) {
+                    score++;
+                }
+
+                if (
+                    /[A-Z]/.test(password) &&
+                    /[a-z]/.test(password)
+                ) {
+                    score++;
+                }
+
+                if (
+                    /\d/.test(password) ||
+                    /[^A-Za-z0-9]/.test(password)
+                ) {
+                    score++;
+                }
+
+
+                strengthBars.forEach(
+                    (bar, index) => {
+
+                        if (!bar) {
+                            return;
+                        }
+
+                        bar.style.background =
+                            index < score
+                                ? "var(--blue)"
+                                : "rgba(100,130,180,.15)";
+                    }
+                );
+
+
+                if (!password) {
+
+                    strengthText.textContent =
+                        "Use at least 6 characters.";
+
+                }
+                else if (score === 1) {
+
+                    strengthText.textContent =
+                        "Weak password.";
+
+                }
+                else if (score === 2) {
+
+                    strengthText.textContent =
+                        "Fair password.";
+
+                }
+                else if (score === 3) {
+
+                    strengthText.textContent =
+                        "Good password.";
+
+                }
+                else {
+
+                    strengthText.textContent =
+                        "Strong password.";
+                }
+            }
+        );
+    }
+
+
+    /* =====================================================
+       REGISTER
+    ===================================================== */
+
+    form.addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+            clearMessage();
+
+
+            /* ---------------------------------------------
+               GET VALUES
+            --------------------------------------------- */
+
+            const fullName =
+                fullNameInput?.value.trim() || "";
+
+            const email =
+                emailInput?.value.trim() || "";
+
+            const password =
+                passwordInput?.value || "";
+
+            const confirmPassword =
+                confirmPasswordInput?.value || "";
+
+            const termsAccepted =
+                termsInput?.checked || false;
+
+
+            /* ---------------------------------------------
+               VALIDATION
+            --------------------------------------------- */
+
+            if (fullName.length < 2) {
+
+                showMessage(
+                    "Please enter your full name."
+                );
+
+                fullNameInput?.focus();
+
+                return;
+            }
+
+
+            const emailPattern =
+                /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(email)) {
+
+                showMessage(
+                    "Please enter a valid email address."
+                );
+
+                emailInput?.focus();
+
+                return;
+            }
+
+
+            if (password.length < 6) {
+
+                showMessage(
+                    "Password must contain at least 6 characters."
+                );
+
+                passwordInput?.focus();
+
+                return;
+            }
+
+
+            if (password !== confirmPassword) {
+
+                showMessage(
+                    "Passwords do not match."
+                );
+
+                confirmPasswordInput?.focus();
+
+                return;
+            }
+
+
+            if (!termsAccepted) {
+
+                showMessage(
+                    "Please accept the Terms of Service and Privacy Policy."
+                );
+
+                return;
+            }
+
+
+            /* ---------------------------------------------
+               SUPABASE CHECK
+            --------------------------------------------- */
+
+            if (!window.supabaseClient) {
+
+                console.error(
+                    "CloudCalc Pro: Supabase client missing."
+                );
+
+                showMessage(
+                    "Supabase connection is not available."
+                );
+
+                return;
+            }
+
+
+            /* ---------------------------------------------
+               BUTTON LOADING
+            --------------------------------------------- */
+
+            if (registerButton) {
+
+                registerButton.disabled = true;
+
+                registerButton.classList.add(
+                    "loading"
+                );
+
+                registerButton.dataset.originalText =
+                    registerButton.textContent;
+
+                registerButton.textContent =
+                    "CREATING ACCOUNT...";
+            }
+
+
+            try {
+
+                console.log(
+                    "CloudCalc Pro: Creating account..."
+                );
+
+
+                /* -----------------------------------------
+                   SUPABASE SIGN UP
+                ----------------------------------------- */
+
+                const {
+                    data,
+                    error
+                } =
+                    await window.supabaseClient
+                        .auth
+                        .signUp({
+
+                            email: email,
+
+                            password: password,
+
+                            options: {
+
+                                data: {
+
+                                    full_name:
+                                        fullName
+
+                                }
+
+                            }
+
+                        });
+
+
+                if (error) {
+                    throw error;
+                }
+
+
+                console.log(
+                    "CloudCalc Pro: Registration successful.",
+                    data
+                );
+
+
+                /* -----------------------------------------
+                   SESSION EXISTS
+                ----------------------------------------- */
+
+                if (data?.session) {
+
+                    showMessage(
+                        "Account created successfully. Redirecting...",
+                        "success"
+                    );
+
+                    if (registerButton) {
+
+                        registerButton.textContent =
+                            "ACCOUNT CREATED ✓";
+                    }
+
+
+                    setTimeout(() => {
+
+                        window.location.href =
+                            "dashboard.html";
+
+                    }, 1000);
+
+                    return;
+                }
+
+
+                /* -----------------------------------------
+                   EMAIL CONFIRMATION REQUIRED
+                ----------------------------------------- */
+
+                showMessage(
+                    "Account created! Please check your email to confirm your account.",
+                    "success"
+                );
+
+
+                if (registerButton) {
+
+                    registerButton.textContent =
+                        "ACCOUNT CREATED ✓";
+                }
+
+
+                setTimeout(() => {
+
+                    window.location.href =
+                        "login.html";
+
+                }, 1800);
+
+            }
+            catch (error) {
+
+                console.error(
+                    "CloudCalc Pro Registration Error:",
+                    error
+                );
+
+
+                let message =
+                    error?.message ||
+                    "Unable to create account.";
+
+
+                const lowerMessage =
+                    message.toLowerCase();
+
+
+                if (
+                    lowerMessage.includes(
+                        "user already registered"
+                    ) ||
+                    lowerMessage.includes(
+                        "already registered"
+                    )
+                ) {
+
+                    message =
+                        "This email is already registered. Please login.";
+                }
+
+
+                if (
+                    lowerMessage.includes(
+                        "password should be at least"
+                    )
+                ) {
+
+                    message =
+                        "Password must contain at least 6 characters.";
+                }
+
+
+                showMessage(
+                    message,
+                    "error"
+                );
+
+
+                if (registerButton) {
+
+                    registerButton.disabled =
+                        false;
+
+                    registerButton.classList.remove(
+                        "loading"
+                    );
+
+                    registerButton.textContent =
+                        registerButton.dataset.originalText ||
+                        "CREATE CLOUDCALC ACCOUNT";
+                }
+            }
+
+        }
+    );
+
+});

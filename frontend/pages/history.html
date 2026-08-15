@@ -250,6 +250,7 @@
         .topbar {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             margin-bottom: 28px;
         }
 
@@ -289,6 +290,55 @@
         }
 
 
+        /* ================= ACTION BUTTONS ================= */
+
+        .history-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .history-action-btn {
+            height: 38px;
+
+            padding: 0 15px;
+
+            border: 1px solid rgba(95,160,255,.20);
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(49,130,255,.13),
+                    rgba(96,72,237,.08)
+                );
+
+            color: #dce8ff;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            cursor: pointer;
+
+            transition: all .25s ease;
+        }
+
+        .history-action-btn:hover {
+            transform: translateY(-2px);
+
+            border-color: rgba(95,160,255,.40);
+
+            box-shadow:
+                0 10px 25px rgba(49,130,255,.12);
+        }
+
+        .history-action-btn:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+
         /* ================= HISTORY ================= */
 
         .history-card {
@@ -313,6 +363,7 @@
 
         .history-header {
             display: grid;
+
             grid-template-columns:
                 minmax(180px, 1.8fr)
                 minmax(120px, .8fr)
@@ -462,6 +513,16 @@
             font-size: 11px;
         }
 
+        .history-error {
+            padding: 25px;
+
+            text-align: center;
+
+            color: #e58a99;
+
+            font-size: 11px;
+        }
+
 
         /* ================= TOAST ================= */
 
@@ -501,6 +562,17 @@
 
 
         /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1000px) {
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 18px;
+            }
+
+        }
+
 
         @media (max-width: 900px) {
 
@@ -577,6 +649,14 @@
 
             .page-heading h1 {
                 font-size: 24px;
+            }
+
+            .history-actions {
+                width: 100%;
+            }
+
+            .history-action-btn {
+                flex: 1;
             }
 
             .toast {
@@ -751,6 +831,29 @@
 
             </div>
 
+
+            <!-- ACTIONS -->
+
+            <div class="history-actions">
+
+                <button
+                    id="downloadCsvBtn"
+                    class="history-action-btn"
+                    type="button"
+                >
+                    📊 Download CSV
+                </button>
+
+                <button
+                    id="downloadPdfBtn"
+                    class="history-action-btn"
+                    type="button"
+                >
+                    📄 Download PDF
+                </button>
+
+            </div>
+
         </header>
 
 
@@ -803,13 +906,22 @@
     ></div>
 
 
-    <!-- ================= SCRIPTS ================= -->
+    <!-- ================= SUPABASE ================= -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="../js/supabaseClient.js"></script>
+    <script src="../js/supabaseClient.js"></script>
 
-<script src="../js/pages/history.js"></script>
+
+    <!-- ================= PDF LIBRARY ================= -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+    <!-- ================= HISTORY ================= -->
+
+    <script src="../js/pages/history.js"></script>
+
 </body>
 
 </html>

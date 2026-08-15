@@ -1,61 +1,90 @@
 /* =========================================================
    CLOUDCALC PRO
-   ANALYTICS
-   REAL SUPABASE DATA
+   ANALYTICS PAGE
+   Backend History API + Supabase Session
 ========================================================= */
 
 "use strict";
 
-let analyticsData = [];
+document.addEventListener("DOMContentLoaded", async function () {
+
+    console.log("CloudCalc Pro: Analytics initialized.");
+
+    /* =====================================================
+       CONFIGURATION
+    ===================================================== */
+
+    const API_BASE_URL = "http://localhost:5000";
 
 
-/* =========================================================
-   SUPABASE CHECK
-========================================================= */
+    /* =====================================================
+       ELEMENTS
+    ===================================================== */
 
-function checkSupabase() {
+    const totalCalculations =
+        document.getElementById("totalCalculations");
 
-    if (!window.supabaseClient) {
+    const averageResult =
+        document.getElementById("averageResult");
 
-        console.error(
-            "CloudCalc Pro: Supabase client missing."
-        );
+    const highestResult =
+        document.getElementById("highestResult");
 
-        return false;
-    }
+    const latestResult =
+        document.getElementById("latestResult");
 
-    return true;
-}
+    const activityChart =
+        document.getElementById("activityChart");
+
+    const operationList =
+        document.getElementById("operationList");
+
+    const mostUsedOperation =
+        document.getElementById("mostUsedOperation");
+
+    const activeDays =
+        document.getElementById("activeDays");
+
+    const userName =
+        document.getElementById("userName");
+
+    const userEmail =
+        document.getElementById("userEmail");
+
+    const userAvatar =
+        document.getElementById("userAvatar");
+
+    const logoutBtn =
+        document.getElementById("logoutBtn");
+
+    const mobileMenu =
+        document.getElementById("mobileMenu");
+
+    const sidebar =
+        document.getElementById("sidebar");
 
 
-/* =========================================================
-   LOAD ANALYTICS
-========================================================= */
-
-async function loadAnalytics() {
-
-    if (!checkSupabase()) {
-        return;
-    }
-
-    try {
-
-        console.log(
-            "CloudCalc Pro: Loading analytics..."
-        );
+    let historyData = [];
 
 
-        /* -----------------------------------------
-           GET USER
-        ----------------------------------------- */
+    /* =====================================================
+       GET SESSION
+    ===================================================== */
+
+    async function getSession() {
+
+        if (!window.supabaseClient) {
+
+            throw new Error(
+                "Supabase client is not available."
+            );
+        }
 
         const {
             data,
             error
         } =
-            await window.supabaseClient
-                .auth
-                .getUser();
+            await window.supabaseClient.auth.getSession();
 
 
         if (error) {
@@ -63,22 +92,32 @@ async function loadAnalytics() {
         }
 
 
-        const user =
-            data?.user;
+        const session =
+            data?.session;
 
 
-        if (!user) {
+        if (!session || !session.user) {
 
             window.location.href =
                 "login.html";
 
-            return;
+            return null;
         }
 
 
-        /* -----------------------------------------
-           USER INFORMATION
-        ----------------------------------------- */
+        return session;
+    }
+
+
+    /* =====================================================
+       LOAD USER
+    ===================================================== */
+
+    function loadUser(session) {
+
+        const user =
+            session.user;
+
 
         const metadata =
             user.user_metadata || {};
@@ -91,424 +130,338 @@ async function loadAnalytics() {
             "User";
 
 
-        setText(
-            "userName",
-            name
-        );
-
-
-        setText(
-            "userEmail",
-            user.email || ""
-        );
-
-
-        setText(
-            "userAvatar",
-            name
-                .charAt(0)
-                .toUpperCase()
-        );
-
-
-        /* -----------------------------------------
-           LOAD CALCULATIONS
-        ----------------------------------------- */
-
-        const {
-            data: calculations,
-            error: calculationError
-        } =
-            await window.supabaseClient
-                .from("calculations")
-                .select(
-                    "id,user_id,expression,result,operation,created_at"
-                )
-                .eq(
-                    "user_id",
-                    user.id
-                )
-                .order(
-                    "created_at",
-                    {
-                        ascending: false
-                    }
-                )
-                .limit(100);
-
-
-        if (calculationError) {
-            throw calculationError;
+        if (userName) {
+            userName.textContent = name;
         }
 
 
-        analyticsData =
-            calculations || [];
+        if (userEmail) {
+            userEmail.textContent =
+                user.email || "";
+        }
+
+
+        if (userAvatar) {
+
+            userAvatar.textContent =
+                name
+                    .charAt(0)
+                    .toUpperCase();
+        }
 
 
         console.log(
-            "CloudCalc Pro: Analytics records:",
-            analyticsData.length
-        );
-
-
-        renderAnalytics();
-
-    }
-    catch (error) {
-
-        console.error(
-            "CloudCalc Pro Analytics error:",
-            error
-        );
-
-
-        showAnalyticsError(
-            error?.message ||
-            "Unable to load analytics."
+            "CloudCalc Pro: Analytics user:",
+            user.email
         );
     }
-}
 
 
-/* =========================================================
-   RENDER ANALYTICS
-========================================================= */
+    /* =====================================================
+       LOAD HISTORY FROM BACKEND
+    ===================================================== */
 
-function renderAnalytics() {
+    async function loadHistory() {
 
-    const numbers =
-        analyticsData
-            .map(
-                item =>
-                    Number(item.result)
-            )
-            .filter(
-                value =>
-                    Number.isFinite(value)
+        const session =
+            await getSession();
+
+
+        if (!session) {
+            return;
+        }
+
+
+        loadUser(session);
+
+
+        const user =
+            session.user;
+
+
+        const userId =
+            user.id;
+
+
+        const accessToken =
+            session.access_token;
+
+
+        if (!userId) {
+
+            throw new Error(
+                "User ID not found."
+            );
+        }
+
+
+        if (!accessToken) {
+
+            throw new Error(
+                "Authentication session expired."
+            );
+        }
+
+
+        console.log(
+            "CloudCalc Pro: Loading analytics history..."
+        );
+
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/api/history?user_id=${encodeURIComponent(userId)}`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${accessToken}`,
+
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
             );
 
 
-    const total =
-        analyticsData.length;
+        let responseData;
 
 
-    const average =
-        numbers.length
-            ? numbers.reduce(
-                (sum, value) =>
-                    sum + value,
-                0
-            ) / numbers.length
-            : 0;
+        try {
+
+            responseData =
+                await response.json();
+
+        }
+        catch {
+
+            throw new Error(
+                "Invalid response from backend."
+            );
+        }
 
 
-    const highest =
-        numbers.length
-            ? Math.max(...numbers)
-            : 0;
+        if (!response.ok) {
+
+            console.error(
+                "Analytics API error:",
+                responseData
+            );
+
+            throw new Error(
+                responseData?.message ||
+                `Analytics API failed: ${response.status}`
+            );
+        }
 
 
-    const latest =
-        numbers.length
-            ? Number(
-                analyticsData[0].result
-            )
-            : 0;
+        historyData =
+            Array.isArray(responseData)
+                ? responseData
+                : responseData?.data ||
+                  responseData?.history ||
+                  [];
 
 
-    setText(
-        "totalCalculations",
-        total
-    );
+        if (!Array.isArray(historyData)) {
+            historyData = [];
+        }
 
 
-    setText(
-        "averageResult",
-        formatNumber(average)
-    );
-
-
-    setText(
-        "highestResult",
-        formatNumber(highest)
-    );
-
-
-    setText(
-        "latestResult",
-        formatNumber(latest)
-    );
-
-
-    renderActivity();
-
-    renderOperations();
-
-    renderInsights();
-}
-
-
-/* =========================================================
-   ACTIVITY CHART
-========================================================= */
-
-function renderActivity() {
-
-    const chart =
-        document.getElementById(
-            "activityChart"
+        console.log(
+            "CloudCalc Pro: Analytics data:",
+            historyData
         );
 
 
-    if (!chart) {
-        return;
+        updateAnalytics();
     }
 
 
-    if (!analyticsData.length) {
+    /* =====================================================
+       UPDATE ALL ANALYTICS
+    ===================================================== */
 
-        chart.innerHTML = `
-            <div class="empty">
-                No calculation activity yet.
-            </div>
-        `;
+    function updateAnalytics() {
 
-        return;
+        updateKPIs();
+
+        updateOperations();
+
+        updateActivityChart();
+
+        updateInsights();
     }
 
 
-    const daily = {};
+    /* =====================================================
+       KPI STATISTICS
+    ===================================================== */
+
+    function updateKPIs() {
+
+        const total =
+            historyData.length;
 
 
-    analyticsData.forEach(
-        item => {
+        /* ---------------------------------------------
+           TOTAL
+        --------------------------------------------- */
 
-            if (!item.created_at) {
-                return;
-            }
+        if (totalCalculations) {
+
+            totalCalculations.textContent =
+                total;
+        }
 
 
-            const date =
-                new Date(
-                    item.created_at
+        /* ---------------------------------------------
+           NUMERIC RESULTS
+        --------------------------------------------- */
+
+        const numericResults =
+            historyData
+                .map(item =>
+                    Number(item.result)
                 )
-                    .toLocaleDateString(
-                        "en-CA"
+                .filter(value =>
+                    Number.isFinite(value)
+                );
+
+
+        /* ---------------------------------------------
+           AVERAGE
+        --------------------------------------------- */
+
+        if (averageResult) {
+
+            if (numericResults.length === 0) {
+
+                averageResult.textContent =
+                    "0";
+
+            }
+            else {
+
+                const sum =
+                    numericResults.reduce(
+                        (a, b) => a + b,
+                        0
                     );
 
 
-            daily[date] =
-                (daily[date] || 0) + 1;
+                const average =
+                    sum /
+                    numericResults.length;
 
+
+                averageResult.textContent =
+                    formatNumber(average);
+            }
         }
-    );
 
 
-    const entries =
-        Object.entries(daily)
-            .sort(
-                (a, b) =>
-                    new Date(a[0]) -
-                    new Date(b[0])
-            )
-            .slice(-12);
+        /* ---------------------------------------------
+           HIGHEST
+        --------------------------------------------- */
 
+        if (highestResult) {
 
-    if (!entries.length) {
+            if (numericResults.length === 0) {
 
-        chart.innerHTML = `
-            <div class="empty">
-                No calculation activity yet.
-            </div>
-        `;
+                highestResult.textContent =
+                    "0";
 
-        return;
-    }
+            }
+            else {
 
-
-    const max =
-        Math.max(
-            ...entries.map(
-                item => item[1]
-            ),
-            1
-        );
-
-
-    chart.innerHTML = "";
-
-
-    entries.forEach(
-        ([date, count]) => {
-
-            const bar =
-                document.createElement(
-                    "div"
-                );
-
-
-            bar.className =
-                "chart-bar";
-
-
-            const height =
-                Math.max(
-                    8,
-                    (count / max) * 100
-                );
-
-
-            bar.style.setProperty(
-                "--height",
-                `${height}%`
-            );
-
-
-            bar.title =
-                `${date}: ${count} calculation${
-                    count === 1
-                        ? ""
-                        : "s"
-                }`;
-
-
-            bar.innerHTML = `
-                <span class="chart-label">
-                    ${escapeHTML(
-                        formatShortDate(date)
-                    )}
-                </span>
-            `;
-
-
-            chart.appendChild(
-                bar
-            );
-
-        }
-    );
-}
-
-
-/* =========================================================
-   OPERATIONS
-========================================================= */
-
-function renderOperations() {
-
-    const container =
-        document.getElementById(
-            "operationList"
-        );
-
-
-    if (!container) {
-        return;
-    }
-
-
-    const operations = {};
-
-
-    analyticsData.forEach(
-        item => {
-
-            const operation =
-                item.operation ||
-                detectOperation(
-                    item.expression
-                );
-
-
-            operations[operation] =
-                (operations[operation] || 0) + 1;
-
-        }
-    );
-
-
-    const sorted =
-        Object.entries(
-            operations
-        )
-            .sort(
-                (a, b) =>
-                    b[1] - a[1]
-            );
-
-
-    if (!sorted.length) {
-
-        container.innerHTML = `
-            <div class="empty">
-                No operation data yet.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    container.innerHTML = "";
-
-
-    sorted.forEach(
-        ([operation, count]) => {
-
-            const row =
-                document.createElement(
-                    "div"
-                );
-
-
-            row.className =
-                "operation-row";
-
-
-            row.innerHTML = `
-
-                <div class="operation-icon">
-                    ${escapeHTML(
-                        operationSymbol(
-                            operation
+                highestResult.textContent =
+                    formatNumber(
+                        Math.max(
+                            ...numericResults
                         )
-                    )}
-                </div>
+                    );
+            }
+        }
 
-                <div class="operation-name">
-                    ${escapeHTML(
-                        operation
-                    )}
-                </div>
 
-                <div class="operation-count">
-                    ${count}
-                </div>
+        /* ---------------------------------------------
+           LATEST
+        --------------------------------------------- */
 
+        if (latestResult) {
+
+            if (historyData.length === 0) {
+
+                latestResult.textContent =
+                    "0";
+
+            }
+            else {
+
+                latestResult.textContent =
+                    String(
+                        historyData[0].result ??
+                        "0"
+                    );
+            }
+        }
+    }
+
+
+    /* =====================================================
+       FORMAT NUMBER
+    ===================================================== */
+
+    function formatNumber(value) {
+
+        if (!Number.isFinite(value)) {
+            return "0";
+        }
+
+
+        return Number(
+            value.toFixed(2)
+        ).toString();
+    }
+
+
+    /* =====================================================
+       OPERATIONS
+    ===================================================== */
+
+    function updateOperations() {
+
+        if (!operationList) {
+            return;
+        }
+
+
+        operationList.innerHTML = "";
+
+
+        if (historyData.length === 0) {
+
+            operationList.innerHTML = `
+                <div
+                    style="
+                        color:#637696;
+                        font-size:10px;
+                    "
+                >
+                    No calculations yet.
+                </div>
             `;
 
-
-            container.appendChild(
-                row
-            );
-
+            return;
         }
-    );
-}
 
 
-/* =========================================================
-   INSIGHTS
-========================================================= */
-
-function renderInsights() {
-
-    const operations = {};
+        const operationCounts = {};
 
 
-    analyticsData.forEach(
-        item => {
+        historyData.forEach(item => {
 
             const operation =
                 item.operation ||
@@ -517,246 +470,476 @@ function renderInsights() {
                 );
 
 
-            operations[operation] =
-                (operations[operation] || 0) + 1;
-
-        }
-    );
+            const normalized =
+                String(operation)
+                    .toLowerCase();
 
 
-    const sorted =
-        Object.entries(
-            operations
-        )
+            operationCounts[normalized] =
+                (operationCounts[normalized] || 0) + 1;
+
+        });
+
+
+        const operations =
+            Object.entries(
+                operationCounts
+            )
             .sort(
-                (a, b) =>
-                    b[1] - a[1]
+                (a, b) => b[1] - a[1]
             );
 
 
-    setText(
-        "mostUsedOperation",
-        sorted.length
-            ? sorted[0][0]
-            : "—"
-    );
+        operations.forEach(
+            ([operation, count]) => {
+
+                const row =
+                    document.createElement("div");
 
 
-    const days =
-        new Set();
+                row.className =
+                    "operation-row";
 
 
-    analyticsData.forEach(
-        item => {
+                row.innerHTML = `
 
-            if (!item.created_at) {
+                    <div class="operation-icon">
+                        ${getOperationIcon(operation)}
+                    </div>
+
+                    <div class="operation-name">
+                        ${escapeHTML(
+                            capitalize(operation)
+                        )}
+                    </div>
+
+                    <div class="operation-count">
+                        ${count}
+                    </div>
+
+                `;
+
+
+                operationList.appendChild(row);
+            }
+        );
+    }
+
+
+    /* =====================================================
+       DETECT OPERATION
+    ===================================================== */
+
+    function detectOperation(expression) {
+
+        const value =
+            String(expression || "");
+
+
+        if (value.includes("+")) {
+            return "addition";
+        }
+
+
+        if (value.includes("-")) {
+            return "subtraction";
+        }
+
+
+        if (
+            value.includes("*") ||
+            value.includes("×")
+        ) {
+            return "multiplication";
+        }
+
+
+        if (
+            value.includes("/") ||
+            value.includes("÷")
+        ) {
+            return "division";
+        }
+
+
+        if (value.includes("%")) {
+            return "percentage";
+        }
+
+
+        return "calculation";
+    }
+
+
+    /* =====================================================
+       OPERATION ICON
+    ===================================================== */
+
+    function getOperationIcon(operation) {
+
+        switch (operation) {
+
+            case "addition":
+            case "add":
+                return "+";
+
+            case "subtraction":
+            case "subtract":
+                return "−";
+
+            case "multiplication":
+            case "multiply":
+                return "×";
+
+            case "division":
+            case "divide":
+                return "÷";
+
+            case "percentage":
+            case "percent":
+                return "%";
+
+            default:
+                return "∑";
+        }
+    }
+
+
+    /* =====================================================
+       ACTIVITY CHART
+    ===================================================== */
+
+    function updateActivityChart() {
+
+        if (!activityChart) {
+            return;
+        }
+
+
+        activityChart.innerHTML = "";
+
+
+        if (historyData.length === 0) {
+
+            activityChart.innerHTML = `
+                <div
+                    style="
+                        width:100%;
+                        text-align:center;
+                        color:#637696;
+                        font-size:11px;
+                    "
+                >
+                    No calculation activity yet.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        /* ---------------------------------------------
+           LAST 7 DAYS
+        --------------------------------------------- */
+
+        const days = [];
+
+
+        for (let i = 6; i >= 0; i--) {
+
+            const date =
+                new Date();
+
+
+            date.setHours(
+                0,
+                0,
+                0,
+                0
+            );
+
+
+            date.setDate(
+                date.getDate() - i
+            );
+
+
+            days.push(date);
+        }
+
+
+        const counts =
+            days.map(day => {
+
+                return historyData.filter(
+                    item => {
+
+                        if (!item.created_at) {
+                            return false;
+                        }
+
+
+                        const itemDate =
+                            new Date(
+                                item.created_at
+                            );
+
+
+                        return (
+                            itemDate.getFullYear() ===
+                                day.getFullYear() &&
+
+                            itemDate.getMonth() ===
+                                day.getMonth() &&
+
+                            itemDate.getDate() ===
+                                day.getDate()
+                        );
+
+                    }
+                ).length;
+
+            });
+
+
+        const max =
+            Math.max(
+                ...counts,
+                1
+            );
+
+
+        days.forEach(
+            (day, index) => {
+
+                const bar =
+                    document.createElement("div");
+
+
+                bar.className =
+                    "chart-bar";
+
+
+                const percentage =
+                    counts[index] === 0
+                        ? 8
+                        : Math.max(
+                            8,
+                            (
+                                counts[index] /
+                                max
+                            ) * 100
+                        );
+
+
+                bar.style.setProperty(
+                    "--height",
+                    `${percentage}%`
+                );
+
+
+                const label =
+                    document.createElement("div");
+
+
+                label.className =
+                    "chart-label";
+
+
+                label.textContent =
+                    day.toLocaleDateString(
+                        undefined,
+                        {
+                            weekday: "short"
+                        }
+                    );
+
+
+                bar.appendChild(label);
+
+
+                activityChart.appendChild(bar);
+
+            }
+        );
+    }
+
+
+    /* =====================================================
+       INSIGHTS
+    ===================================================== */
+
+    function updateInsights() {
+
+        /* ---------------------------------------------
+           MOST USED OPERATION
+        --------------------------------------------- */
+
+        if (mostUsedOperation) {
+
+            const counts = {};
+
+
+            historyData.forEach(item => {
+
+                const operation =
+                    String(
+                        item.operation ||
+                        detectOperation(
+                            item.expression
+                        )
+                    ).toLowerCase();
+
+
+                counts[operation] =
+                    (counts[operation] || 0) + 1;
+
+            });
+
+
+            const sorted =
+                Object.entries(counts)
+                    .sort(
+                        (a, b) =>
+                            b[1] - a[1]
+                    );
+
+
+            mostUsedOperation.textContent =
+                sorted.length
+                    ? capitalize(
+                        sorted[0][0]
+                    )
+                    : "—";
+        }
+
+
+        /* ---------------------------------------------
+           ACTIVE DAYS
+        --------------------------------------------- */
+
+        if (activeDays) {
+
+            const uniqueDays =
+                new Set();
+
+
+            historyData.forEach(item => {
+
+                if (!item.created_at) {
+                    return;
+                }
+
+
+                const date =
+                    new Date(
+                        item.created_at
+                    );
+
+
+                const day =
+                    date.toISOString()
+                        .split("T")[0];
+
+
+                uniqueDays.add(day);
+
+            });
+
+
+            activeDays.textContent =
+                uniqueDays.size;
+        }
+    }
+
+
+    /* =====================================================
+       CAPITALIZE
+    ===================================================== */
+
+    function capitalize(value) {
+
+        return String(value)
+            .charAt(0)
+            .toUpperCase() +
+            String(value)
+                .slice(1);
+    }
+
+
+    /* =====================================================
+       HTML ESCAPE
+    ===================================================== */
+
+    function escapeHTML(value) {
+
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    async function logout() {
+
+        try {
+
+            if (!window.supabaseClient) {
+
+                window.location.href =
+                    "login.html";
+
                 return;
             }
 
 
-            days.add(
-                new Date(
-                    item.created_at
-                )
-                    .toLocaleDateString(
-                        "en-CA"
-                    )
+            const {
+                error
+            } =
+                await window.supabaseClient.auth.signOut();
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            window.location.href =
+                "login.html";
+
+        }
+        catch (error) {
+
+            console.error(
+                "CloudCalc Pro: Logout error:",
+                error
             );
-
         }
-    );
-
-
-    setText(
-        "activeDays",
-        days.size
-    );
-}
-
-
-/* =========================================================
-   OPERATION DETECTION
-========================================================= */
-
-function detectOperation(
-    expression
-) {
-
-    const value =
-        String(
-            expression || ""
-        );
-
-
-    if (value.includes("+")) {
-        return "addition";
     }
 
 
-    if (
-        value.includes("−") ||
-        value.includes("-")
-    ) {
-        return "subtraction";
-    }
+    if (logoutBtn) {
 
-
-    if (
-        value.includes("×") ||
-        value.includes("*")
-    ) {
-        return "multiplication";
-    }
-
-
-    if (
-        value.includes("÷") ||
-        value.includes("/")
-    ) {
-        return "division";
-    }
-
-
-    if (value.includes("%")) {
-        return "percentage";
-    }
-
-
-    return "basic";
-}
-
-
-/* =========================================================
-   OPERATION SYMBOL
-========================================================= */
-
-function operationSymbol(
-    operation
-) {
-
-    const value =
-        String(
-            operation || ""
-        )
-            .toLowerCase();
-
-
-    if (
-        value.includes("add") ||
-        value === "+"
-    ) {
-        return "+";
-    }
-
-
-    if (
-        value.includes("subtract") ||
-        value === "-"
-    ) {
-        return "−";
-    }
-
-
-    if (
-        value.includes("multip") ||
-        value === "*"
-    ) {
-        return "×";
-    }
-
-
-    if (
-        value.includes("div") ||
-        value === "/"
-    ) {
-        return "÷";
-    }
-
-
-    if (
-        value.includes("percent") ||
-        value === "%"
-    ) {
-        return "%";
-    }
-
-
-    return "∑";
-}
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-async function logout() {
-
-    if (!checkSupabase()) {
-        return;
-    }
-
-
-    try {
-
-        console.log(
-            "CloudCalc Pro: Logging out..."
-        );
-
-
-        const {
-            error
-        } =
-            await window.supabaseClient
-                .auth
-                .signOut();
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        window.location.href =
-            "login.html";
-
-    }
-    catch (error) {
-
-        console.error(
-            "Logout error:",
-            error
-        );
-
-
-        alert(
-            error?.message ||
-            "Unable to logout."
+        logoutBtn.addEventListener(
+            "click",
+            logout
         );
     }
-}
 
 
-/* =========================================================
-   MOBILE MENU
-========================================================= */
+    /* =====================================================
+       MOBILE MENU
+    ===================================================== */
 
-function setupMobile() {
+    if (mobileMenu && sidebar) {
 
-    const button =
-        document.getElementById(
-            "mobileMenu"
-        );
-
-
-    const sidebar =
-        document.getElementById(
-            "sidebar"
-        );
-
-
-    if (button && sidebar) {
-
-        button.addEventListener(
+        mobileMenu.addEventListener(
             "click",
             function () {
 
@@ -769,204 +952,61 @@ function setupMobile() {
     }
 
 
-    document
-        .querySelectorAll(
-            ".nav-link"
-        )
-        .forEach(
-            link => {
+    /* =====================================================
+       START ANALYTICS
+    ===================================================== */
 
-                link.addEventListener(
-                    "click",
-                    function () {
+    try {
 
-                        sidebar?.classList.remove(
-                            "open"
-                        );
-
-                    }
-                );
-
-            }
-        );
-}
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function setText(
-    elementId,
-    value
-) {
-
-    const element =
-        document.getElementById(
-            elementId
-        );
-
-
-    if (element) {
-
-        element.textContent =
-            value;
-    }
-}
-
-
-function formatNumber(value) {
-
-    const number =
-        Number(value);
-
-
-    if (!Number.isFinite(number)) {
-        return "0";
-    }
-
-
-    return number.toLocaleString(
-        undefined,
-        {
-            maximumFractionDigits: 6
-        }
-    );
-}
-
-
-function formatShortDate(
-    value
-) {
-
-    const date =
-        new Date(value);
-
-
-    if (
-        Number.isNaN(
-            date.getTime()
-        )
-    ) {
-
-        return value;
-    }
-
-
-    return date.toLocaleDateString(
-        undefined,
-        {
-            day: "numeric",
-            month: "short"
-        }
-    );
-}
-
-
-function escapeHTML(value) {
-
-    return String(
-        value ?? ""
-    )
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
-}
-
-
-/* =========================================================
-   ERROR DISPLAY
-========================================================= */
-
-function showAnalyticsError(
-    message
-) {
-
-    const containers = [
-        "activityChart",
-        "operationList"
-    ];
-
-
-    containers.forEach(
-        id => {
-
-            const element =
-                document.getElementById(
-                    id
-                );
-
-
-            if (element) {
-
-                element.innerHTML = `
-                    <div class="empty">
-                        Unable to load analytics.
-                        <br>
-                        <small>
-                            ${escapeHTML(
-                                message
-                            )}
-                        </small>
-                    </div>
-                `;
-
-            }
-
-        }
-    );
-}
-
-
-/* =========================================================
-   START
-========================================================= */
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+        await loadHistory();
 
         console.log(
-            "CloudCalc Pro: Analytics initialized."
+            "CloudCalc Pro: Analytics loaded successfully."
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "CloudCalc Pro: Analytics loading error:",
+            error
         );
 
 
-        setupMobile();
+        if (activityChart) {
 
-
-        const logoutBtn =
-            document.getElementById(
-                "logoutBtn"
-            );
-
-
-        if (logoutBtn) {
-
-            logoutBtn.addEventListener(
-                "click",
-                logout
-            );
+            activityChart.innerHTML = `
+                <div
+                    style="
+                        width:100%;
+                        text-align:center;
+                        color:#ff7b8b;
+                        font-size:11px;
+                    "
+                >
+                    Unable to load analytics.
+                </div>
+            `;
         }
 
 
-        loadAnalytics();
+        if (operationList) {
+
+            operationList.innerHTML = `
+                <div
+                    style="
+                        color:#ff7b8b;
+                        font-size:10px;
+                    "
+                >
+                    ${escapeHTML(
+                        error.message ||
+                        "Analytics loading failed."
+                    )}
+                </div>
+            `;
+        }
 
     }
-);
+
+});
