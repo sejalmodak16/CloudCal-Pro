@@ -1,3 +1,4 @@
+
 /* =========================================================
    CLOUDCALC PRO
    CALCULATOR PAGE
@@ -5,6 +6,11 @@
 ========================================================= */
 
 "use strict";
+
+
+/* =========================================================
+   CALCULATOR STATE
+========================================================= */
 
 let currentExpression = "";
 let lastResult = "";
@@ -15,20 +21,30 @@ let toastTimer = null;
    BACKEND CONFIGURATION
 ========================================================= */
 
-const API_BASE_URL = "http://localhost:5000";
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 
 /* =========================================================
    ELEMENTS
 ========================================================= */
 
-const expressionElement = document.getElementById("expression");
-const resultElement = document.getElementById("result");
-const loginButton = document.getElementById("loginButton");
-const logoutBtn = document.getElementById("logoutBtn");
-const mobileMenu = document.getElementById("mobileMenu");
-const sidebar = document.getElementById("sidebar");
-const toast = document.getElementById("toast");
+const expressionElement =
+    document.getElementById("expression");
+
+const resultElement =
+    document.getElementById("result");
+
+const logoutBtn =
+    document.getElementById("logoutBtn");
+
+const mobileMenu =
+    document.getElementById("mobileMenu");
+
+const sidebar =
+    document.getElementById("sidebar");
+
+const toast =
+    document.getElementById("toast");
 
 
 /* =========================================================
@@ -84,14 +100,14 @@ function addValue(value) {
         return;
     }
 
-    currentExpression += value;
+    currentExpression += String(value);
 
     updateDisplay();
 }
 
 
 /* =========================================================
-   CLEAR
+   CLEAR CALCULATOR
 ========================================================= */
 
 function clearCalculator() {
@@ -117,6 +133,139 @@ function deleteLast() {
 
 
 /* =========================================================
+   SAFE CALCULATOR EVALUATION
+========================================================= */
+
+function evaluateExpression(expression) {
+
+    const cleanedExpression =
+        expression
+            .replace(/×/g, "*")
+            .replace(/÷/g, "/")
+            .trim();
+
+
+    /* -----------------------------------------------------
+       SECURITY VALIDATION
+    ----------------------------------------------------- */
+
+    if (!cleanedExpression) {
+        throw new Error("Expression is empty.");
+    }
+
+
+    /*
+       Only allow calculator characters.
+       No letters, variables, functions, or other code.
+    */
+
+    if (!/^[0-9+\-*/%.()\s]+$/.test(cleanedExpression)) {
+        throw new Error("Invalid expression.");
+    }
+
+
+    /*
+       Prevent dangerous repeated operators.
+       This also catches expressions such as:
+
+       5**
+       5//2
+       5*+
+       5+*
+    */
+
+    if (
+        /[+\-*/%]{2,}/.test(
+            cleanedExpression.replace(
+                /^\-/,
+                ""
+            )
+        )
+    ) {
+        throw new Error("Invalid operator sequence.");
+    }
+
+
+    /*
+       Prevent expression ending with an operator.
+    */
+
+    if (/[+\-*/%.]$/.test(cleanedExpression)) {
+        throw new Error("Incomplete expression.");
+    }
+
+
+    /*
+       Check brackets.
+    */
+
+    let brackets = 0;
+
+    for (const character of cleanedExpression) {
+
+        if (character === "(") {
+            brackets++;
+        }
+
+        if (character === ")") {
+            brackets--;
+
+            if (brackets < 0) {
+                throw new Error("Invalid brackets.");
+            }
+        }
+    }
+
+    if (brackets !== 0) {
+        throw new Error("Invalid brackets.");
+    }
+
+
+    /* -----------------------------------------------------
+       CALCULATE
+    ----------------------------------------------------- */
+
+    let result;
+
+    try {
+
+        result =
+            Function(
+                `"use strict"; return (${cleanedExpression})`
+            )();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Expression evaluation error:",
+            error
+        );
+
+        throw new Error(
+            "Unable to calculate expression."
+        );
+    }
+
+
+    /* -----------------------------------------------------
+       RESULT VALIDATION
+    ----------------------------------------------------- */
+
+    if (
+        typeof result !== "number" ||
+        !Number.isFinite(result)
+    ) {
+        throw new Error("Invalid result.");
+    }
+
+
+    return result;
+}
+
+
+/* =========================================================
    CALCULATE
 ========================================================= */
 
@@ -131,11 +280,8 @@ async function calculate() {
         return;
     }
 
-    try {
 
-        /* ---------------------------------------------
-           NORMALIZE EXPRESSION
-        --------------------------------------------- */
+    try {
 
         const expression =
             currentExpression
@@ -143,62 +289,30 @@ async function calculate() {
                 .replace(/÷/g, "/");
 
 
-        /* ---------------------------------------------
-           SECURITY VALIDATION
-        --------------------------------------------- */
-
-        if (
-            !/^[0-9+\-*/%.()\s]+$/.test(
-                expression
-            )
-        ) {
-
-            throw new Error(
-                "Invalid expression."
-            );
-        }
-
-
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            CALCULATE RESULT
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         const result =
-            Function(
-                `"use strict"; return (${expression})`
-            )();
+            evaluateExpression(expression);
 
 
-        /* ---------------------------------------------
-           RESULT VALIDATION
-        --------------------------------------------- */
-
-        if (
-            typeof result !== "number" ||
-            !Number.isFinite(result)
-        ) {
-
-            throw new Error(
-                "Invalid result."
-            );
-        }
-
-
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            FORMAT RESULT
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         lastResult =
             Number(
                 result.toFixed(10)
             ).toString();
 
+
         updateDisplay();
 
 
-        /* ---------------------------------------------
-           SAVE TO BACKEND
-        --------------------------------------------- */
+        /* -------------------------------------------------
+           SAVE CALCULATION
+        ------------------------------------------------- */
 
         await saveCalculation(
             currentExpression,
@@ -227,17 +341,13 @@ async function calculate() {
 
 /* =========================================================
    SAVE CALCULATION
-   BACKEND API
+   SUPABASE AUTH + BACKEND API
 ========================================================= */
 
 async function saveCalculation(
     expression,
     result
 ) {
-
-    /* ---------------------------------------------
-       SUPABASE CHECK
-    --------------------------------------------- */
 
     if (!window.supabaseClient) {
 
@@ -255,29 +365,29 @@ async function saveCalculation(
 
     try {
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            GET CURRENT SESSION
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         const {
-            data: sessionData,
-            error: sessionError
+            data,
+            error
         } =
             await window.supabaseClient.auth.getSession();
 
 
-        if (sessionError) {
-            throw sessionError;
+        if (error) {
+            throw error;
         }
 
 
         const session =
-            sessionData?.session;
+            data?.session;
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            CHECK LOGIN
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         if (
             !session ||
@@ -292,20 +402,13 @@ async function saveCalculation(
                 "Please login to save calculations."
             );
 
-            setTimeout(() => {
-
-                window.location.href =
-                    "login.html";
-
-            }, 1000);
-
             return;
         }
 
 
-        /* ---------------------------------------------
-           GET AUTH DATA
-        --------------------------------------------- */
+        /* -------------------------------------------------
+           AUTH DATA
+        ------------------------------------------------- */
 
         const userId =
             session.user.id;
@@ -330,23 +433,14 @@ async function saveCalculation(
         }
 
 
-        /* ---------------------------------------------
-           DEBUG
-        --------------------------------------------- */
-
         console.log(
             "CloudCalc Pro: Saving calculation..."
         );
 
-        console.log(
-            "CloudCalc Pro: Authenticated user:",
-            userId
-        );
 
-
-        /* ---------------------------------------------
-           SEND TO BACKEND
-        --------------------------------------------- */
+        /* -------------------------------------------------
+           SEND TO FASTAPI BACKEND
+        ------------------------------------------------- */
 
         const response =
             await fetch(
@@ -355,7 +449,6 @@ async function saveCalculation(
                     method: "POST",
 
                     headers: {
-
                         "Authorization":
                             `Bearer ${accessToken}`,
 
@@ -365,6 +458,9 @@ async function saveCalculation(
 
                     body: JSON.stringify({
 
+                        user_id:
+                            userId,
+
                         expression:
                             expression,
 
@@ -373,15 +469,14 @@ async function saveCalculation(
 
                         operation:
                             "calculation"
-
                     })
                 }
             );
 
 
-        /* ---------------------------------------------
-           READ RESPONSE
-        --------------------------------------------- */
+        /* -------------------------------------------------
+           READ BACKEND RESPONSE
+        ------------------------------------------------- */
 
         let responseData = null;
 
@@ -405,9 +500,9 @@ async function saveCalculation(
         }
 
 
-        /* ---------------------------------------------
-           HANDLE AUTH ERROR
-        --------------------------------------------- */
+        /* -------------------------------------------------
+           AUTHENTICATION ERROR
+        ------------------------------------------------- */
 
         if (response.status === 401) {
 
@@ -420,20 +515,13 @@ async function saveCalculation(
                 "Session expired. Please login again."
             );
 
-            setTimeout(() => {
-
-                window.location.href =
-                    "login.html";
-
-            }, 1200);
-
             return;
         }
 
 
-        /* ---------------------------------------------
-           HANDLE OTHER BACKEND ERRORS
-        --------------------------------------------- */
+        /* -------------------------------------------------
+           BACKEND ERROR
+        ------------------------------------------------- */
 
         if (!response.ok) {
 
@@ -443,6 +531,7 @@ async function saveCalculation(
             );
 
             throw new Error(
+                responseData?.detail ||
                 responseData?.message ||
                 responseData?.error ||
                 `Failed to save calculation. Status: ${response.status}`
@@ -450,9 +539,9 @@ async function saveCalculation(
         }
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            SUCCESS
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         console.log(
             "CloudCalc Pro: Calculation saved successfully.",
@@ -487,7 +576,8 @@ document.addEventListener(
     "keydown",
     function (event) {
 
-        const key = event.key;
+        const key =
+            event.key;
 
 
         /* Numbers */
@@ -521,7 +611,7 @@ document.addEventListener(
         }
 
 
-        /* Enter / Equal */
+        /* Calculate */
 
         if (
             key === "Enter" ||
@@ -536,11 +626,9 @@ document.addEventListener(
         }
 
 
-        /* Backspace */
+        /* Delete */
 
-        if (
-            key === "Backspace"
-        ) {
+        if (key === "Backspace") {
 
             deleteLast();
 
@@ -548,15 +636,12 @@ document.addEventListener(
         }
 
 
-        /* Escape */
+        /* Clear */
 
-        if (
-            key === "Escape"
-        ) {
+        if (key === "Escape") {
 
             clearCalculator();
         }
-
     }
 );
 
@@ -580,7 +665,9 @@ document
                     this.dataset.action;
 
 
-                /* VALUE */
+                /* -----------------------------------------
+                   VALUE BUTTON
+                ----------------------------------------- */
 
                 if (
                     value !== undefined
@@ -592,7 +679,9 @@ document
                 }
 
 
-                /* CLEAR */
+                /* -----------------------------------------
+                   CLEAR
+                ----------------------------------------- */
 
                 if (
                     action === "clear"
@@ -604,7 +693,9 @@ document
                 }
 
 
-                /* DELETE */
+                /* -----------------------------------------
+                   DELETE
+                ----------------------------------------- */
 
                 if (
                     action === "delete"
@@ -616,7 +707,9 @@ document
                 }
 
 
-                /* CALCULATE */
+                /* -----------------------------------------
+                   CALCULATE
+                ----------------------------------------- */
 
                 if (
                     action === "calculate"
@@ -626,10 +719,8 @@ document
 
                     return;
                 }
-
             }
         );
-
     });
 
 
@@ -645,7 +736,7 @@ async function loadCalculatorUser() {
             "CloudCalc Pro: Supabase client not available."
         );
 
-        return;
+        return null;
     }
 
 
@@ -655,38 +746,82 @@ async function loadCalculatorUser() {
             data,
             error
         } =
-            await window.supabaseClient.auth.getUser();
+            await window.supabaseClient.auth.getSession();
 
 
         if (error) {
-            throw error;
-        }
 
-
-        const user =
-            data?.user;
-
-
-        /* ---------------------------------------------
-           NOT LOGGED IN
-        --------------------------------------------- */
-
-        if (!user) {
-
-            console.log(
-                "CloudCalc Pro: No active user."
+            console.error(
+                "CloudCalc Pro: Session loading error:",
+                error
             );
 
-            window.location.href =
-                "login.html";
-
-            return;
+            return null;
         }
 
 
-        /* ---------------------------------------------
-           USER METADATA
-        --------------------------------------------- */
+        const session =
+            data?.session;
+
+
+        /* -------------------------------------------------
+           NO ACTIVE SESSION
+        ------------------------------------------------- */
+
+        if (
+            !session ||
+            !session.user
+        ) {
+
+            console.warn(
+                "CloudCalc Pro: No active login session."
+            );
+
+
+            const userName =
+                document.getElementById(
+                    "userName"
+                );
+
+            const userEmail =
+                document.getElementById(
+                    "userEmail"
+                );
+
+            const userAvatar =
+                document.getElementById(
+                    "userAvatar"
+                );
+
+
+            if (userName) {
+                userName.textContent =
+                    "Guest";
+            }
+
+
+            if (userEmail) {
+                userEmail.textContent =
+                    "Please login";
+            }
+
+
+            if (userAvatar) {
+                userAvatar.textContent =
+                    "G";
+            }
+
+
+            return null;
+        }
+
+
+        /* -------------------------------------------------
+           ACTIVE USER
+        ------------------------------------------------- */
+
+        const user =
+            session.user;
 
         const metadata =
             user.user_metadata || {};
@@ -699,14 +834,11 @@ async function loadCalculatorUser() {
             "User";
 
 
-        /* ---------------------------------------------
-           USER NAME
-        --------------------------------------------- */
-
         const userName =
             document.getElementById(
                 "userName"
             );
+
 
         if (userName) {
 
@@ -715,14 +847,11 @@ async function loadCalculatorUser() {
         }
 
 
-        /* ---------------------------------------------
-           EMAIL
-        --------------------------------------------- */
-
         const userEmail =
             document.getElementById(
                 "userEmail"
             );
+
 
         if (userEmail) {
 
@@ -731,14 +860,11 @@ async function loadCalculatorUser() {
         }
 
 
-        /* ---------------------------------------------
-           AVATAR
-        --------------------------------------------- */
-
         const userAvatar =
             document.getElementById(
                 "userAvatar"
             );
+
 
         if (userAvatar) {
 
@@ -750,9 +876,12 @@ async function loadCalculatorUser() {
 
 
         console.log(
-            "CloudCalc Pro: User loaded:",
+            "CloudCalc Pro: User loaded successfully:",
             user.email
         );
+
+
+        return user;
 
     }
 
@@ -762,6 +891,8 @@ async function loadCalculatorUser() {
             "CloudCalc Pro: User loading error:",
             error
         );
+
+        return null;
     }
 }
 
@@ -807,7 +938,7 @@ async function logout() {
     catch (error) {
 
         console.error(
-            "Logout error:",
+            "CloudCalc Pro logout error:",
             error
         );
 
@@ -847,7 +978,6 @@ if (
             sidebar.classList.toggle(
                 "open"
             );
-
         }
     );
 }
@@ -868,6 +998,5 @@ document.addEventListener(
         updateDisplay();
 
         loadCalculatorUser();
-
     }
 );

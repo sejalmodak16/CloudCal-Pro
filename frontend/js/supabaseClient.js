@@ -1,3 +1,4 @@
+
 /* =========================================================
    CLOUDCALC PRO
    SUPABASE CLIENT
@@ -14,11 +15,11 @@
 
     // Supabase project URL
     const SUPABASE_URL =
-        "https://xtjhwyuwlcpdsglwrhen.supabase.co";
+        "https://njallnenxfulkmuklxau.supabase.co";
 
     // Supabase Publishable Key
     const SUPABASE_PUBLISHABLE_KEY =
-        "sb_publishable_dd0muU0RnFRGFy0J9x8P4g_WaQ5xxLS";
+        "sb_publishable_scxhfAjCebR7PslUtAH0hQ_LHHn-rM5";
 
     // Check Supabase CDN
     if (!window.supabase) {

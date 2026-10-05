@@ -1,0 +1,48 @@
+services:
+  backend:
+    build: .
+    container_name: cloudcalc-backend
+    ports:
+      - "7071:80"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: cloudcalc_user
+      DB_PASSWORD: cloudcalc_password
+      DB_NAME: cloudcalc
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    container_name: cloudcalc-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: cloudcalc
+      MYSQL_USER: cloudcalc_user
+      MYSQL_PASSWORD: cloudcalc_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-ucloudcalc_user",
+          "-pcloudcalc_password",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mysql_data:

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -786,6 +787,149 @@
             font-size: 9px;
         }
 
+        /* ================= CLOUDCALC AI ================= */
+
+        .ai-assistant-panel {
+            margin-top: 24px;
+            padding: 24px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #111827, #1e293b);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+        }
+
+        .ai-assistant-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .ai-assistant-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .ai-assistant-icon {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: rgba(139, 92, 246, 0.18);
+            font-size: 22px;
+        }
+
+        .ai-assistant-title h3 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 18px;
+        }
+
+        .ai-assistant-title p {
+            margin: 4px 0 0;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .ai-powered {
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.06);
+            color: #c4b5fd;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .ai-input-wrapper {
+            display: flex;
+            gap: 12px;
+        }
+
+        #aiQuestion {
+            flex: 1;
+            min-height: 48px;
+            padding: 13px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 14px;
+            resize: vertical;
+        }
+
+        #aiQuestion::placeholder {
+            color: #64748b;
+        }
+
+        #aiQuestion:focus {
+            border-color: #8b5cf6;
+        }
+
+        #askAiButton {
+            min-width: 150px;
+            border: none;
+            border-radius: 12px;
+            padding: 0 20px;
+            background: linear-gradient(135deg, #7c3aed, #6366f1);
+            color: #ffffff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        #askAiButton:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        #askAiButton:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ai-response {
+            display: none;
+            margin-top: 18px;
+            padding: 18px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.04);
+            border-left: 3px solid #8b5cf6;
+        }
+
+        .ai-response.visible {
+            display: block;
+        }
+
+        .ai-response-label {
+            margin-bottom: 8px;
+            color: #a78bfa;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        #aiResponseText {
+            color: #e2e8f0;
+            line-height: 1.7;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+
+        .ai-error {
+            border-left-color: #ef4444;
+        }
+
+        .ai-error .ai-response-label {
+            color: #f87171;
+        }
+
         /* ================= RESPONSIVE ================= */
 
         @media(max-width: 1100px) {
@@ -844,6 +988,27 @@
                 opacity: .18;
 
                 right: -40px;
+            }
+
+        }
+
+        @media(max-width:700px) {
+
+            .ai-assistant-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .ai-powered {
+                align-self: flex-start;
+            }
+
+            .ai-input-wrapper {
+                flex-direction: column;
+            }
+
+            #askAiButton {
+                min-height: 48px;
             }
 
         }
@@ -1286,16 +1451,96 @@
 
         </section>
 
+
+        <!-- ================= CLOUDCALC AI ASSISTANT ================= -->
+
+        <section class="ai-assistant-panel">
+
+            <div class="ai-assistant-header">
+
+                <div class="ai-assistant-title">
+
+                    <div class="ai-assistant-icon">
+                        🤖
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            CloudCalc AI
+                        </h3>
+
+                        <p>
+                            Intelligent explanations powered by Grok
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="ai-powered">
+                    Powered by Grok
+                </div>
+
+            </div>
+
+
+            <div class="ai-input-wrapper">
+
+                <textarea
+                    id="aiQuestion"
+                    placeholder="Ask CloudCalc AI about calculations, formulas, percentages, analytics..."
+                ></textarea>
+
+                <button
+                    id="askAiButton"
+                    type="button"
+                >
+                    Ask CloudCalc AI
+                </button>
+
+            </div>
+
+
+            <div
+                class="ai-response"
+                id="aiResponse"
+            >
+
+                <div class="ai-response-label">
+                    CloudCalc AI Response
+                </div>
+
+                <div id="aiResponseText"></div>
+
+            </div>
+
+        </section>
+
+
     </main>
 
 
     <!-- Supabase CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Supabase Client -->
+
 <script src="../js/supabaseClient.js"></script>
 
-<!-- Dashboard JavaScript -->
-<script src="../js/pages/dashboard.js"></script>
+    <!-- CloudCalc AI Service -->
+
+    <script
+        src="../js/services/ai-service.js"
+    ></script>
+
+
+    <!-- Dashboard JavaScript -->
+
+    <script
+        src="../js/pages/dashboard.js"
+    ></script>
+
 </body>
 </html>

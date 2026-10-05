@@ -1,7 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta name="viewport"
@@ -29,7 +31,11 @@
         body {
             margin: 0;
             min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
 
             background:
                 radial-gradient(
@@ -40,6 +46,7 @@
                 );
 
             color: #ffffff;
+
             overflow-x: hidden;
         }
 
@@ -51,17 +58,25 @@
         .profile-bg {
             position: fixed;
             inset: 0;
+
             pointer-events: none;
+
             overflow: hidden;
+
             z-index: 0;
         }
 
+
         .profile-orb {
             position: absolute;
+
             border-radius: 50%;
+
             filter: blur(2px);
+
             opacity: 0.35;
         }
+
 
         .orb-one {
             width: 280px;
@@ -77,6 +92,7 @@
                     transparent 70%
                 );
         }
+
 
         .orb-two {
             width: 350px;
@@ -100,12 +116,15 @@
 
         .profile-page {
             position: relative;
+
             z-index: 1;
 
             min-height: 100vh;
 
             display: flex;
+
             justify-content: center;
+
             align-items: center;
 
             padding: 40px 20px;
@@ -118,6 +137,7 @@
 
         .profile-card {
             width: 100%;
+
             max-width: 760px;
 
             padding: 38px;
@@ -153,6 +173,7 @@
                 box-shadow 0.3s ease;
         }
 
+
         .profile-card:hover {
             transform:
                 perspective(1200px)
@@ -171,7 +192,9 @@
 
         .profile-header {
             display: flex;
+
             align-items: center;
+
             gap: 22px;
 
             margin-bottom: 35px;
@@ -187,10 +210,12 @@
             border-radius: 50%;
 
             display: flex;
+
             align-items: center;
             justify-content: center;
 
             font-size: 34px;
+
             font-weight: 800;
 
             color: #ffffff;
@@ -215,8 +240,10 @@
             margin: 0 0 7px;
 
             font-size: 30px;
+
             letter-spacing: -0.5px;
         }
+
 
         .profile-title p {
             margin: 0;
@@ -244,7 +271,9 @@
 
         .form-group {
             display: flex;
+
             flex-direction: column;
+
             gap: 9px;
         }
 
@@ -256,6 +285,7 @@
 
         .form-group label {
             font-size: 13px;
+
             font-weight: 700;
 
             color:
@@ -308,6 +338,7 @@
 
         .profile-input[readonly] {
             opacity: 0.65;
+
             cursor: not-allowed;
         }
 
@@ -318,6 +349,7 @@
 
         .profile-actions {
             display: flex;
+
             gap: 14px;
 
             margin-top: 30px;
@@ -326,6 +358,7 @@
 
         .profile-btn {
             border: none;
+
             outline: none;
 
             padding: 14px 24px;
@@ -333,6 +366,7 @@
             border-radius: 14px;
 
             font-size: 14px;
+
             font-weight: 700;
 
             cursor: pointer;
@@ -402,7 +436,9 @@
                 rgba(255,255,255,0.1);
 
             display: flex;
+
             justify-content: space-between;
+
             gap: 20px;
 
             color:
@@ -414,7 +450,9 @@
 
         .account-status {
             display: flex;
+
             align-items: center;
+
             gap: 7px;
         }
 
@@ -443,15 +481,18 @@
                 padding: 20px 14px;
             }
 
+
             .profile-card {
                 padding: 25px 20px;
 
                 border-radius: 22px;
             }
 
+
             .profile-header {
                 gap: 15px;
             }
+
 
             .profile-avatar {
                 width: 70px;
@@ -460,29 +501,36 @@
                 font-size: 26px;
             }
 
+
             .profile-title h1 {
                 font-size: 24px;
             }
+
 
             .profile-form {
                 grid-template-columns: 1fr;
             }
 
+
             .form-group.full {
                 grid-column: auto;
             }
+
 
             .profile-actions {
                 flex-direction: column;
             }
 
+
             .profile-btn {
                 width: 100%;
             }
 
+
             .account-info {
                 flex-direction: column;
             }
+
         }
 
     </style>
@@ -523,7 +571,7 @@
                     class="profile-avatar"
                     id="profileAvatar"
                 >
-                    U
+                    G
                 </div>
 
 
@@ -548,7 +596,6 @@
                 class="profile-form"
                 id="profileForm"
             >
-
 
                 <!-- FULL NAME -->
 
@@ -587,7 +634,6 @@
 
                 </div>
 
-
             </form>
 
 
@@ -623,7 +669,7 @@
 
                     <span class="status-dot"></span>
 
-                    <span>
+                    <span id="accountStatus">
                         Account connected
                     </span>
 
@@ -644,139 +690,27 @@
 
     <!-- =====================================================
          SCRIPTS
+         IMPORTANT:
+         Load each script ONLY ONCE.
     ===================================================== -->
 
-    <!-- 1. Supabase library FIRST -->
+    <!-- 1. Supabase library -->
 
     <script
         src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
     </script>
 
 
-    <!-- 2. Your Supabase client SECOND -->
+    <!-- 2. Supabase client -->
 
     <script src="../js/supabaseClient.js"></script>
 
 
-    <!-- 3. Profile logic THIRD -->
+    <!-- 3. Profile JavaScript -->
 
-    <script src="../js/profile.js"></script>
+    <script src="../js/pages/profile.js"></script>
 
-
-    <script>
-
-        /*
-         * Update avatar and account email
-         * after profile.js loads the user.
-         */
-
-        async function setupProfileVisuals() {
-
-            const {
-                data: {
-                    user
-                }
-            } =
-                await window
-                    .supabaseClient
-                    .auth
-                    .getUser();
-
-
-            if (!user) {
-                return;
-            }
-
-
-            const name =
-                user.user_metadata?.full_name ||
-                user.email ||
-                "User";
-
-
-            const avatar =
-                document.getElementById(
-                    "profileAvatar"
-                );
-
-
-            if (avatar) {
-
-                avatar.textContent =
-                    name
-                        .charAt(0)
-                        .toUpperCase();
-
-            }
-
-
-            const accountEmail =
-                document.getElementById(
-                    "accountEmail"
-                );
-
-
-            if (accountEmail) {
-
-                accountEmail.textContent =
-                    user.email || "";
-
-            }
-
-        }
-
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            () => {
-
-                setupProfileVisuals();
-
-
-                const saveButton =
-                    document.getElementById(
-                        "saveProfile"
-                    );
-
-
-                if (saveButton) {
-
-                    saveButton.addEventListener(
-                        "click",
-                        saveProfile
-                    );
-
-                }
-
-
-                const logoutButton =
-                    document.getElementById(
-                        "logoutButton"
-                    );
-
-
-                if (logoutButton) {
-
-                    logoutButton.addEventListener(
-                        "click",
-                        logout
-                    );
-
-                }
-
-            }
-        );
-
-    </script>
-
-<!-- Supabase CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<!-- Supabase Client -->
-<script src="../js/supabaseClient.js"></script>
-
-<!-- Profile JS -->
-<script src="../js/pages/profile.js"></script>
 
 </body>
+
 </html>

@@ -1,7 +1,8 @@
+
 /* =========================================================
    CLOUDCALC PRO
    DASHBOARD
-   Supabase History Data
+   Supabase History Data + CloudCalc AI
 ========================================================= */
 
 "use strict";
@@ -99,11 +100,13 @@ async function loadDashboard() {
 
 
         if (userName) {
+
             userName.textContent = name;
         }
 
 
         if (userEmail) {
+
             userEmail.textContent =
                 user.email || "";
         }
@@ -823,12 +826,191 @@ function escapeHTML(value) {
 
 
 /* =========================================================
+   CLOUDCALC AI
+========================================================= */
+
+function initializeCloudCalcAI() {
+
+    const questionInput =
+        document.getElementById(
+            "aiQuestion"
+        );
+
+    const askButton =
+        document.getElementById(
+            "askAiButton"
+        );
+
+    const responseBox =
+        document.getElementById(
+            "aiResponse"
+        );
+
+    const responseText =
+        document.getElementById(
+            "aiResponseText"
+        );
+
+
+    /* -----------------------------------------
+       CHECK AI ELEMENTS
+    ----------------------------------------- */
+
+    if (
+        !questionInput ||
+        !askButton ||
+        !responseBox ||
+        !responseText
+    ) {
+
+        console.warn(
+            "CloudCalc AI elements not found."
+        );
+
+        return;
+    }
+
+
+    /* -----------------------------------------
+       ASK AI
+    ----------------------------------------- */
+
+    async function askAI() {
+
+        const question =
+            questionInput.value.trim();
+
+
+        /* -------------------------------------
+           EMPTY QUESTION
+        ------------------------------------- */
+
+        if (!question) {
+
+            responseBox.classList.add(
+                "visible",
+                "ai-error"
+            );
+
+            responseText.textContent =
+                "Please enter a question first.";
+
+            return;
+        }
+
+
+        /* -------------------------------------
+           LOADING STATE
+        ------------------------------------- */
+
+        askButton.disabled = true;
+
+        askButton.textContent =
+            "Thinking...";
+
+
+        responseBox.classList.add(
+            "visible"
+        );
+
+        responseBox.classList.remove(
+            "ai-error"
+        );
+
+
+        responseText.textContent =
+            "CloudCalc AI is analyzing your question...";
+
+
+        /* -------------------------------------
+           CALL GROQ THROUGH BACKEND
+        ------------------------------------- */
+
+        try {
+
+            const data =
+                await askCloudCalcAI(
+                    question
+                );
+
+
+            responseText.textContent =
+                data.answer ||
+                "No response received.";
+
+        }
+        catch (error) {
+
+            console.error(
+                "CloudCalc AI Error:",
+                error
+            );
+
+
+            responseBox.classList.add(
+                "ai-error"
+            );
+
+
+            responseText.textContent =
+                error?.message ||
+                "Unable to connect to CloudCalc AI.";
+
+        }
+        finally {
+
+            askButton.disabled = false;
+
+            askButton.textContent =
+                "Ask CloudCalc AI";
+
+        }
+    }
+
+
+    /* -----------------------------------------
+       BUTTON CLICK
+    ----------------------------------------- */
+
+    askButton.addEventListener(
+        "click",
+        askAI
+    );
+
+
+    /* -----------------------------------------
+       ENTER KEY
+       Shift + Enter = New Line
+    ----------------------------------------- */
+
+    questionInput.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter" &&
+                !event.shiftKey
+            ) {
+
+                event.preventDefault();
+
+                askAI();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
    START DASHBOARD
 ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
-    function () {
+    function() {
 
         console.log(
             "CloudCalc Pro: Dashboard initialized."
@@ -854,6 +1036,13 @@ document.addEventListener(
 
 
         loadDashboard();
+
+
+        /* -----------------------------------------
+           INITIALIZE AI
+        ----------------------------------------- */
+
+        initializeCloudCalcAI();
 
     }
 );

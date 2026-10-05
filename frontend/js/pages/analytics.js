@@ -1,20 +1,23 @@
 /* =========================================================
    CLOUDCALC PRO
    ANALYTICS PAGE
-   Backend History API + Supabase Session
+   FastAPI Backend + Supabase Session
 ========================================================= */
 
 "use strict";
+
 
 document.addEventListener("DOMContentLoaded", async function () {
 
     console.log("CloudCalc Pro: Analytics initialized.");
 
+
     /* =====================================================
        CONFIGURATION
     ===================================================== */
 
-    const API_BASE_URL = "http://localhost:5000";
+    const API_BASE_URL =
+        "http://127.0.0.1:8000";
 
 
     /* =====================================================
@@ -64,11 +67,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("sidebar");
 
 
+    /* =====================================================
+       HISTORY DATA
+    ===================================================== */
+
     let historyData = [];
 
 
     /* =====================================================
-       GET SESSION
+       GET SUPABASE SESSION
     ===================================================== */
 
     async function getSession() {
@@ -80,11 +87,14 @@ document.addEventListener("DOMContentLoaded", async function () {
             );
         }
 
+
         const {
             data,
             error
         } =
-            await window.supabaseClient.auth.getSession();
+            await window.supabaseClient
+                .auth
+                .getSession();
 
 
         if (error) {
@@ -96,7 +106,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             data?.session;
 
 
-        if (!session || !session.user) {
+        if (
+            !session ||
+            !session.user
+        ) {
 
             window.location.href =
                 "login.html";
@@ -115,6 +128,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     function loadUser(session) {
 
+        if (!session || !session.user) {
+            return;
+        }
+
+
         const user =
             session.user;
 
@@ -131,11 +149,14 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
         if (userName) {
-            userName.textContent = name;
+
+            userName.textContent =
+                name;
         }
 
 
         if (userEmail) {
+
             userEmail.textContent =
                 user.email || "";
         }
@@ -158,7 +179,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
     /* =====================================================
-       LOAD HISTORY FROM BACKEND
+       LOAD HISTORY FROM FASTAPI
     ===================================================== */
 
     async function loadHistory() {
@@ -175,12 +196,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         loadUser(session);
 
 
-        const user =
-            session.user;
-
-
         const userId =
-            user.id;
+            session.user.id;
 
 
         const accessToken =
@@ -208,6 +225,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         );
 
 
+        /* -------------------------------------------------
+           API REQUEST
+        ------------------------------------------------- */
+
         const response =
             await fetch(
                 `${API_BASE_URL}/api/history?user_id=${encodeURIComponent(userId)}`,
@@ -215,6 +236,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     method: "GET",
 
                     headers: {
+
                         "Authorization":
                             `Bearer ${accessToken}`,
 
@@ -225,7 +247,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             );
 
 
-        let responseData;
+        /* -------------------------------------------------
+           RESPONSE
+        ------------------------------------------------- */
+
+        let responseData = {};
 
 
         try {
@@ -234,7 +260,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 await response.json();
 
         }
-        catch {
+        catch (error) {
 
             throw new Error(
                 "Invalid response from backend."
@@ -242,29 +268,48 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
 
+        /* -------------------------------------------------
+           API ERROR
+        ------------------------------------------------- */
+
         if (!response.ok) {
 
             console.error(
-                "Analytics API error:",
+                "CloudCalc Pro: Analytics API error:",
                 responseData
             );
 
+
+            if (response.status === 401) {
+
+                throw new Error(
+                    "Your session has expired. Please login again."
+                );
+            }
+
+
             throw new Error(
+                responseData?.detail ||
                 responseData?.message ||
                 `Analytics API failed: ${response.status}`
             );
         }
 
 
+        /* -------------------------------------------------
+           EXTRACT HISTORY
+        ------------------------------------------------- */
+
         historyData =
             Array.isArray(responseData)
                 ? responseData
-                : responseData?.data ||
-                  responseData?.history ||
+                : responseData?.history ||
+                  responseData?.data ||
                   [];
 
 
         if (!Array.isArray(historyData)) {
+
             historyData = [];
         }
 
@@ -274,6 +319,10 @@ document.addEventListener("DOMContentLoaded", async function () {
             historyData
         );
 
+
+        /* -------------------------------------------------
+           UPDATE DASHBOARD
+        ------------------------------------------------- */
 
         updateAnalytics();
     }
@@ -305,9 +354,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             historyData.length;
 
 
-        /* ---------------------------------------------
-           TOTAL
-        --------------------------------------------- */
+        /* -------------------------------------------------
+           TOTAL CALCULATIONS
+        ------------------------------------------------- */
 
         if (totalCalculations) {
 
@@ -316,27 +365,31 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            NUMERIC RESULTS
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         const numericResults =
             historyData
-                .map(item =>
-                    Number(item.result)
+                .map(
+                    item =>
+                        Number(item.result)
                 )
-                .filter(value =>
-                    Number.isFinite(value)
+                .filter(
+                    value =>
+                        Number.isFinite(value)
                 );
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            AVERAGE
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         if (averageResult) {
 
-            if (numericResults.length === 0) {
+            if (
+                numericResults.length === 0
+            ) {
 
                 averageResult.textContent =
                     "0";
@@ -346,7 +399,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                 const sum =
                     numericResults.reduce(
-                        (a, b) => a + b,
+                        (a, b) =>
+                            a + b,
                         0
                     );
 
@@ -357,18 +411,22 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
                 averageResult.textContent =
-                    formatNumber(average);
+                    formatNumber(
+                        average
+                    );
             }
         }
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            HIGHEST
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         if (highestResult) {
 
-            if (numericResults.length === 0) {
+            if (
+                numericResults.length === 0
+            ) {
 
                 highestResult.textContent =
                     "0";
@@ -386,13 +444,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            LATEST
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         if (latestResult) {
 
-            if (historyData.length === 0) {
+            if (
+                historyData.length === 0
+            ) {
 
                 latestResult.textContent =
                     "0";
@@ -416,7 +476,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     function formatNumber(value) {
 
-        if (!Number.isFinite(value)) {
+        if (
+            !Number.isFinite(value)
+        ) {
+
             return "0";
         }
 
@@ -438,10 +501,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
 
-        operationList.innerHTML = "";
+        operationList.innerHTML =
+            "";
 
 
-        if (historyData.length === 0) {
+        if (
+            historyData.length === 0
+        ) {
 
             operationList.innerHTML = `
                 <div
@@ -461,24 +527,29 @@ document.addEventListener("DOMContentLoaded", async function () {
         const operationCounts = {};
 
 
-        historyData.forEach(item => {
+        historyData.forEach(
+            item => {
 
-            const operation =
-                item.operation ||
-                detectOperation(
-                    item.expression
-                );
-
-
-            const normalized =
-                String(operation)
-                    .toLowerCase();
+                const operation =
+                    item.operation ||
+                    detectOperation(
+                        item.expression
+                    );
 
 
-            operationCounts[normalized] =
-                (operationCounts[normalized] || 0) + 1;
+                const normalized =
+                    String(operation)
+                        .toLowerCase();
 
-        });
+
+                operationCounts[normalized] =
+                    (
+                        operationCounts[
+                            normalized
+                        ] || 0
+                    ) + 1;
+            }
+        );
 
 
         const operations =
@@ -486,7 +557,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 operationCounts
             )
             .sort(
-                (a, b) => b[1] - a[1]
+                (a, b) =>
+                    b[1] - a[1]
             );
 
 
@@ -494,7 +566,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             ([operation, count]) => {
 
                 const row =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
 
                 row.className =
@@ -504,12 +578,16 @@ document.addEventListener("DOMContentLoaded", async function () {
                 row.innerHTML = `
 
                     <div class="operation-icon">
-                        ${getOperationIcon(operation)}
+                        ${getOperationIcon(
+                            operation
+                        )}
                     </div>
 
                     <div class="operation-name">
                         ${escapeHTML(
-                            capitalize(operation)
+                            capitalize(
+                                operation
+                            )
                         )}
                     </div>
 
@@ -520,7 +598,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 `;
 
 
-                operationList.appendChild(row);
+                operationList.appendChild(
+                    row
+                );
             }
         );
     }
@@ -533,15 +613,23 @@ document.addEventListener("DOMContentLoaded", async function () {
     function detectOperation(expression) {
 
         const value =
-            String(expression || "");
+            String(
+                expression || ""
+            );
 
 
-        if (value.includes("+")) {
+        if (
+            value.includes("+")
+        ) {
+
             return "addition";
         }
 
 
-        if (value.includes("-")) {
+        if (
+            value.includes("-")
+        ) {
+
             return "subtraction";
         }
 
@@ -550,6 +638,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             value.includes("*") ||
             value.includes("×")
         ) {
+
             return "multiplication";
         }
 
@@ -558,11 +647,15 @@ document.addEventListener("DOMContentLoaded", async function () {
             value.includes("/") ||
             value.includes("÷")
         ) {
+
             return "division";
         }
 
 
-        if (value.includes("%")) {
+        if (
+            value.includes("%")
+        ) {
+
             return "percentage";
         }
 
@@ -583,21 +676,26 @@ document.addEventListener("DOMContentLoaded", async function () {
             case "add":
                 return "+";
 
+
             case "subtraction":
             case "subtract":
                 return "−";
+
 
             case "multiplication":
             case "multiply":
                 return "×";
 
+
             case "division":
             case "divide":
                 return "÷";
 
+
             case "percentage":
             case "percent":
                 return "%";
+
 
             default:
                 return "∑";
@@ -616,10 +714,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
 
-        activityChart.innerHTML = "";
+        activityChart.innerHTML =
+            "";
 
 
-        if (historyData.length === 0) {
+        if (
+            historyData.length === 0
+        ) {
 
             activityChart.innerHTML = `
                 <div
@@ -638,14 +739,18 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            LAST 7 DAYS
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         const days = [];
 
 
-        for (let i = 6; i >= 0; i--) {
+        for (
+            let i = 6;
+            i >= 0;
+            i--
+        ) {
 
             const date =
                 new Date();
@@ -664,42 +769,51 @@ document.addEventListener("DOMContentLoaded", async function () {
             );
 
 
-            days.push(date);
+            days.push(
+                date
+            );
         }
 
 
+        /* -------------------------------------------------
+           CALCULATE COUNTS
+        ------------------------------------------------- */
+
         const counts =
-            days.map(day => {
+            days.map(
+                day => {
 
-                return historyData.filter(
-                    item => {
+                    return historyData.filter(
+                        item => {
 
-                        if (!item.created_at) {
-                            return false;
-                        }
+                            if (
+                                !item.created_at
+                            ) {
+
+                                return false;
+                            }
 
 
-                        const itemDate =
-                            new Date(
-                                item.created_at
+                            const itemDate =
+                                new Date(
+                                    item.created_at
+                                );
+
+
+                            return (
+                                itemDate.getFullYear() ===
+                                    day.getFullYear() &&
+
+                                itemDate.getMonth() ===
+                                    day.getMonth() &&
+
+                                itemDate.getDate() ===
+                                    day.getDate()
                             );
-
-
-                        return (
-                            itemDate.getFullYear() ===
-                                day.getFullYear() &&
-
-                            itemDate.getMonth() ===
-                                day.getMonth() &&
-
-                            itemDate.getDate() ===
-                                day.getDate()
-                        );
-
-                    }
-                ).length;
-
-            });
+                        }
+                    ).length;
+                }
+            );
 
 
         const max =
@@ -709,11 +823,17 @@ document.addEventListener("DOMContentLoaded", async function () {
             );
 
 
+        /* -------------------------------------------------
+           CREATE BARS
+        ------------------------------------------------- */
+
         days.forEach(
             (day, index) => {
 
                 const bar =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
 
                 bar.className =
@@ -739,7 +859,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
                 const label =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
 
                 label.className =
@@ -750,16 +872,20 @@ document.addEventListener("DOMContentLoaded", async function () {
                     day.toLocaleDateString(
                         undefined,
                         {
-                            weekday: "short"
+                            weekday:
+                                "short"
                         }
                     );
 
 
-                bar.appendChild(label);
+                bar.appendChild(
+                    label
+                );
 
 
-                activityChart.appendChild(bar);
-
+                activityChart.appendChild(
+                    bar
+                );
             }
         );
     }
@@ -771,38 +897,45 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     function updateInsights() {
 
-        /* ---------------------------------------------
+
+        /* -------------------------------------------------
            MOST USED OPERATION
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         if (mostUsedOperation) {
 
             const counts = {};
 
 
-            historyData.forEach(item => {
+            historyData.forEach(
+                item => {
 
-                const operation =
-                    String(
-                        item.operation ||
-                        detectOperation(
-                            item.expression
-                        )
-                    ).toLowerCase();
+                    const operation =
+                        String(
+                            item.operation ||
+                            detectOperation(
+                                item.expression
+                            )
+                        ).toLowerCase();
 
 
-                counts[operation] =
-                    (counts[operation] || 0) + 1;
-
-            });
+                    counts[operation] =
+                        (
+                            counts[operation] ||
+                            0
+                        ) + 1;
+                }
+            );
 
 
             const sorted =
-                Object.entries(counts)
-                    .sort(
-                        (a, b) =>
-                            b[1] - a[1]
-                    );
+                Object.entries(
+                    counts
+                )
+                .sort(
+                    (a, b) =>
+                        b[1] - a[1]
+                );
 
 
             mostUsedOperation.textContent =
@@ -814,9 +947,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
 
-        /* ---------------------------------------------
+        /* -------------------------------------------------
            ACTIVE DAYS
-        --------------------------------------------- */
+        ------------------------------------------------- */
 
         if (activeDays) {
 
@@ -824,27 +957,33 @@ document.addEventListener("DOMContentLoaded", async function () {
                 new Set();
 
 
-            historyData.forEach(item => {
+            historyData.forEach(
+                item => {
 
-                if (!item.created_at) {
-                    return;
-                }
+                    if (
+                        !item.created_at
+                    ) {
+
+                        return;
+                    }
 
 
-                const date =
-                    new Date(
-                        item.created_at
+                    const date =
+                        new Date(
+                            item.created_at
+                        );
+
+
+                    const day =
+                        date.toISOString()
+                            .split("T")[0];
+
+
+                    uniqueDays.add(
+                        day
                     );
-
-
-                const day =
-                    date.toISOString()
-                        .split("T")[0];
-
-
-                uniqueDays.add(day);
-
-            });
+                }
+            );
 
 
             activeDays.textContent =
@@ -859,11 +998,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     function capitalize(value) {
 
-        return String(value)
-            .charAt(0)
-            .toUpperCase() +
-            String(value)
-                .slice(1);
+        const text =
+            String(value);
+
+
+        return (
+            text.charAt(0)
+                .toUpperCase() +
+            text.slice(1)
+        );
     }
 
 
@@ -873,12 +1016,29 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     function escapeHTML(value) {
 
-        return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+        return String(
+            value ?? ""
+        )
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
     }
 
 
@@ -890,7 +1050,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         try {
 
-            if (!window.supabaseClient) {
+            if (
+                !window.supabaseClient
+            ) {
 
                 window.location.href =
                     "login.html";
@@ -902,12 +1064,19 @@ document.addEventListener("DOMContentLoaded", async function () {
             const {
                 error
             } =
-                await window.supabaseClient.auth.signOut();
+                await window.supabaseClient
+                    .auth
+                    .signOut();
 
 
             if (error) {
                 throw error;
             }
+
+
+            console.log(
+                "CloudCalc Pro: User logged out."
+            );
 
 
             window.location.href =
@@ -924,6 +1093,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
 
+    /* =====================================================
+       LOGOUT BUTTON
+    ===================================================== */
+
     if (logoutBtn) {
 
         logoutBtn.addEventListener(
@@ -937,7 +1110,10 @@ document.addEventListener("DOMContentLoaded", async function () {
        MOBILE MENU
     ===================================================== */
 
-    if (mobileMenu && sidebar) {
+    if (
+        mobileMenu &&
+        sidebar
+    ) {
 
         mobileMenu.addEventListener(
             "click",
@@ -946,7 +1122,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 sidebar.classList.toggle(
                     "open"
                 );
-
             }
         );
     }
@@ -959,6 +1134,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     try {
 
         await loadHistory();
+
 
         console.log(
             "CloudCalc Pro: Analytics loaded successfully."
@@ -1006,7 +1182,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 </div>
             `;
         }
-
     }
 
 });

@@ -1,0 +1,3 @@
+"""
+CloudCalc Pro AI package.
+"""
