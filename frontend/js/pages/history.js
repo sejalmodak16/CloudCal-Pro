@@ -1,4 +1,3 @@
-
 /* =========================================================
    CLOUDCALC PRO
    HISTORY PAGE
@@ -53,7 +52,7 @@ document.addEventListener(
         ===================================================== */
 
         const API_BASE_URL =
-            "http://127.0.0.1:8000";
+            "http://127.0.0.1:5000";
 
 
         /* =====================================================
@@ -79,14 +78,12 @@ document.addEventListener(
                 return;
             }
 
-
             toast.textContent =
                 message;
 
             toast.classList.add(
                 "show"
             );
-
 
             setTimeout(
                 () => {
@@ -146,7 +143,6 @@ document.addEventListener(
                 );
             }
 
-
             const {
                 data,
                 error
@@ -155,15 +151,12 @@ document.addEventListener(
                     .auth
                     .getSession();
 
-
             if (error) {
                 throw error;
             }
 
-
             const session =
                 data?.session;
-
 
             if (
                 !session ||
@@ -176,7 +169,6 @@ document.addEventListener(
 
                 return null;
             }
-
 
             return session;
         }
@@ -196,7 +188,6 @@ document.addEventListener(
 
                 return;
             }
-
 
             try {
 
@@ -222,7 +213,6 @@ document.addEventListener(
                 if (!session) {
 
                     currentHistory = [];
-
 
                     historyList.innerHTML = `
                         <div class="empty-state">
@@ -297,7 +287,6 @@ document.addEventListener(
 
                 let responseData = {};
 
-
                 try {
 
                     responseData =
@@ -323,7 +312,6 @@ document.addEventListener(
                         responseData
                     );
 
-
                     if (
                         response.status === 401
                     ) {
@@ -332,7 +320,6 @@ document.addEventListener(
                             "Your session has expired. Please login again."
                         );
                     }
-
 
                     throw new Error(
                         responseData?.detail ||
@@ -404,7 +391,6 @@ document.addEventListener(
                     error
                 );
 
-
                 if (historyList) {
 
                     historyList.innerHTML = `
@@ -430,10 +416,8 @@ document.addEventListener(
                 return;
             }
 
-
             historyList.innerHTML =
                 "";
-
 
             history.forEach(
                 item => {
@@ -443,25 +427,20 @@ document.addEventListener(
                             "div"
                         );
 
-
                     row.className =
                         "history-row";
-
 
                     const expression =
                         item.expression ||
                         "Unknown";
 
-
                     const result =
                         item.result ??
                         "0";
 
-
                     const operation =
                         item.operation ||
                         "calculation";
-
 
                     const date =
                         item.created_at
@@ -469,7 +448,6 @@ document.addEventListener(
                                 item.created_at
                             ).toLocaleString()
                             : "";
-
 
                     row.innerHTML = `
 
@@ -489,7 +467,6 @@ document.addEventListener(
 
                         </div>
 
-
                         <div class="history-result">
 
                             = ${escapeHTML(
@@ -498,7 +475,6 @@ document.addEventListener(
 
                         </div>
 
-
                         <div class="history-operation">
 
                             ${escapeHTML(
@@ -506,7 +482,6 @@ document.addEventListener(
                             )}
 
                         </div>
-
 
                         <div>
 
@@ -523,7 +498,6 @@ document.addEventListener(
                         </div>
 
                     `;
-
 
                     historyList.appendChild(
                         row
@@ -574,17 +548,14 @@ document.addEventListener(
                 return;
             }
 
-
             const confirmed =
                 confirm(
                     "Are you sure you want to delete this calculation?"
                 );
 
-
             if (!confirmed) {
                 return;
             }
-
 
             try {
 
@@ -634,7 +605,6 @@ document.addEventListener(
 
                 let responseData = {};
 
-
                 try {
 
                     responseData =
@@ -669,7 +639,6 @@ document.addEventListener(
                     "Calculation deleted successfully."
                 );
 
-
                 await loadHistory();
 
             }
@@ -680,7 +649,6 @@ document.addEventListener(
                     "CloudCalc Pro: Delete error:",
                     error
                 );
-
 
                 showToast(
                     error.message ||
@@ -729,7 +697,6 @@ document.addEventListener(
                 } =
                     window.jspdf;
 
-
                 const doc =
                     new jsPDF();
 
@@ -748,7 +715,6 @@ document.addEventListener(
                     20
                 );
 
-
                 doc.setFontSize(
                     12
                 );
@@ -758,7 +724,6 @@ document.addEventListener(
                     20,
                     30
                 );
-
 
                 doc.setFontSize(
                     9
@@ -777,11 +742,9 @@ document.addEventListener(
 
                 let y = 52;
 
-
                 doc.setFontSize(
                     10
                 );
-
 
                 doc.text(
                     "Expression",
@@ -789,13 +752,11 @@ document.addEventListener(
                     y
                 );
 
-
                 doc.text(
                     "Result",
                     85,
                     y
                 );
-
 
                 doc.text(
                     "Operation",
@@ -803,13 +764,11 @@ document.addEventListener(
                     y
                 );
 
-
                 doc.text(
                     "Date",
                     160,
                     y
                 );
-
 
                 y += 8;
 
@@ -828,7 +787,6 @@ document.addEventListener(
                             y = 20;
                         }
 
-
                         const expression =
                             String(
                                 item.expression ||
@@ -837,7 +795,6 @@ document.addEventListener(
                                 0,
                                 30
                             );
-
 
                         const result =
                             String(
@@ -848,7 +805,6 @@ document.addEventListener(
                                 18
                             );
 
-
                         const operation =
                             String(
                                 item.operation ||
@@ -858,7 +814,6 @@ document.addEventListener(
                                 15
                             );
 
-
                         const date =
                             item.created_at
                                 ? new Date(
@@ -866,13 +821,11 @@ document.addEventListener(
                                 ).toLocaleDateString()
                                 : "";
 
-
                         doc.text(
                             expression,
                             20,
                             y
                         );
-
 
                         doc.text(
                             result,
@@ -880,20 +833,17 @@ document.addEventListener(
                             y
                         );
 
-
                         doc.text(
                             operation,
                             125,
                             y
                         );
 
-
                         doc.text(
                             date,
                             160,
                             y
                         );
-
 
                         y += 8;
 
@@ -909,7 +859,6 @@ document.addEventListener(
                     "CloudCalc-Pro-History.pdf"
                 );
 
-
                 showToast(
                     "PDF downloaded successfully."
                 );
@@ -922,7 +871,6 @@ document.addEventListener(
                     "CloudCalc Pro: PDF download error:",
                     error
                 );
-
 
                 showToast(
                     "Unable to create PDF."
@@ -947,7 +895,6 @@ document.addEventListener(
 
                 return;
             }
-
 
             try {
 
@@ -1034,44 +981,35 @@ document.addEventListener(
                         }
                     );
 
-
                 const url =
                     URL.createObjectURL(
                         blob
                     );
-
 
                 const link =
                     document.createElement(
                         "a"
                     );
 
-
                 link.href =
                     url;
 
-
                 link.download =
                     "CloudCalc-Pro-History.csv";
-
 
                 document.body.appendChild(
                     link
                 );
 
-
                 link.click();
-
 
                 document.body.removeChild(
                     link
                 );
 
-
                 URL.revokeObjectURL(
                     url
                 );
-
 
                 showToast(
                     "CSV downloaded successfully."
@@ -1085,7 +1023,6 @@ document.addEventListener(
                     "CloudCalc Pro: CSV download error:",
                     error
                 );
-
 
                 showToast(
                     "Unable to create CSV."
@@ -1153,13 +1090,11 @@ document.addEventListener(
                             "userAvatar"
                         );
 
-
                     if (userName) {
 
                         userName.textContent =
                             "Guest";
                     }
-
 
                     if (userEmail) {
 
@@ -1167,13 +1102,11 @@ document.addEventListener(
                             "Please login";
                     }
 
-
                     if (userAvatar) {
 
                         userAvatar.textContent =
                             "G";
                     }
-
 
                     return;
                 }
@@ -1186,10 +1119,8 @@ document.addEventListener(
                 const user =
                     session.user;
 
-
                 const metadata =
                     user.user_metadata || {};
-
 
                 const name =
                     metadata.full_name ||
@@ -1197,12 +1128,10 @@ document.addEventListener(
                     user.email?.split("@")[0] ||
                     "User";
 
-
                 const userName =
                     document.getElementById(
                         "userName"
                     );
-
 
                 if (userName) {
 
@@ -1210,12 +1139,10 @@ document.addEventListener(
                         name;
                 }
 
-
                 const userEmail =
                     document.getElementById(
                         "userEmail"
                     );
-
 
                 if (userEmail) {
 
@@ -1223,12 +1150,10 @@ document.addEventListener(
                         user.email || "";
                 }
 
-
                 const userAvatar =
                     document.getElementById(
                         "userAvatar"
                     );
-
 
                 if (userAvatar) {
 
@@ -1237,7 +1162,6 @@ document.addEventListener(
                             .charAt(0)
                             .toUpperCase();
                 }
-
 
                 console.log(
                     "CloudCalc Pro: User loaded successfully:",
@@ -1272,7 +1196,6 @@ document.addEventListener(
                     return;
                 }
 
-
                 const {
                     error
                 } =
@@ -1280,16 +1203,13 @@ document.addEventListener(
                         .auth
                         .signOut();
 
-
                 if (error) {
                     throw error;
                 }
 
-
                 console.log(
                     "CloudCalc Pro: User logged out."
                 );
-
 
                 window.location.href =
                     "login.html";
@@ -1302,7 +1222,6 @@ document.addEventListener(
                     "CloudCalc Pro: Logout error:",
                     error
                 );
-
 
                 showToast(
                     "Unable to logout."
