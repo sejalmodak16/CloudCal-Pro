@@ -1,65 +1,129 @@
+
+from pathlib import Path
+import os
+
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from supabase import create_client, Client
-from dotenv import load_dotenv
-import os
 
-from backend.Assistaint.grok_service import ask_grok
-from backend.Assistaint.schemas import AIRequest, AIResponse
+from Assistaint.grok_service import ask_grok
+from Assistaint.schemas import AIRequest, AIResponse
 
 
 # ============================================================
 # ENVIRONMENT
 # ============================================================
 
-load_dotenv()
+ROOT_ENV = Path(__file__).resolve().parents[1] / ".env"
+load_dotenv(ROOT_ENV, override=True)
 
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip()
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "").strip()
+SUPABASE_SERVICE_ROLE_KEY = os.getenv(
+    "SUPABASE_SERVICE_ROLE_KEY", ""
+).strip()
 
-if not SUPABASE_URL:
-    raise RuntimeError("SUPABASE_URL is missing from .env")
+if not SUPABASE_URL or not SUPABASE_KEY:
+    raise RuntimeError(
+        "SUPABASE_URL and SUPABASE_KEY must be set in the root .env file."
+    )
 
-if not SUPABASE_KEY:
-    raise RuntimeError("SUPABASE_KEY is missing from .env")
-
-
-# ============================================================
-# SUPABASE CLIENT
-# ============================================================
-
-supabase: Client = create_client(
-    SUPABASE_URL,
-    SUPABASE_KEY
-)
+if not SUPABASE_URL.startswith("https://"):
+    raise RuntimeError("SUPABASE_URL must be an HTTPS URL.")
 
 
 # ============================================================
-# FASTAPI APPLICATION
+# APPLICATION
 # ============================================================
 
 app = FastAPI(
     title="CloudCalc Pro API",
-    description="CloudCalc Pro with Groq AI Assistant and Supabase",
-    version="1.0.0"
+    description="CloudCalc Pro with Supabase and Groq AI",
+    version="1.2.0",
 )
-
-
-# ============================================================
-# CORS
-# ============================================================
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+        "http://127.0.0.1:5001",
+        "http://localhost:5001",
+        "null",
+    ],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
 # ============================================================
-# ROOT
+# SUPABASE HELPERS
+# ============================================================
+
+def get_auth_client() -> Client:
+    return create_client(SUPABASE_URL, SUPABASE_KEY)
+
+
+def get_verified_user(authorization: str | None):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=401,
+            detail="Please log in. A valid Bearer token is required.",
+        )
+
+    token = authorization[len("Bearer "):].strip()
+
+    if not token:
+        raise HTTPException(
+            status_code=401,
+            detail="Login token is missing.",
+        )
+
+    try:
+        auth_client = get_auth_client()
+        response = auth_client.auth.get_user(jwt=token)
+        user = response.user
+
+        if user is None:
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid or expired login session.",
+            )
+
+        return str(user.id), token
+
+    except HTTPException:
+        raise
+    except Exception as error:
+        print("Supabase token verification failed:", repr(error))
+        raise HTTPException(
+            status_code=401,
+            detail=(
+                "Supabase rejected the login token. "
+                "Log in again and verify the Supabase project configuration."
+            ),
+        )
+
+
+def get_database_client(token: str) -> Client:
+    # Prefer a server-only secret/service-role key for database access.
+    # The authenticated user's identity must be verified first.
+    if SUPABASE_SERVICE_ROLE_KEY:
+        return create_client(
+            SUPABASE_URL,
+            SUPABASE_SERVICE_ROLE_KEY,
+        )
+
+    # Without a server key, forward the user's token so RLS applies.
+    client = create_client(SUPABASE_URL, SUPABASE_KEY)
+    client.postgrest.auth(token)
+    return client
+
+
+# ============================================================
+# ROOT AND HEALTH
 # ============================================================
 
 @app.get("/")
@@ -67,14 +131,9 @@ def root():
     return {
         "success": True,
         "application": "CloudCalc Pro",
-        "service": "CloudCalc Pro API",
-        "status": "running"
+        "status": "running",
     }
 
-
-# ============================================================
-# HEALTH CHECK
-# ============================================================
 
 @app.get("/api/health")
 def health():
@@ -82,12 +141,12 @@ def health():
         "success": True,
         "status": "healthy",
         "ai": "Groq AI",
-        "model": "openai/gpt-oss-20b"
+        "model": "openai/gpt-oss-20b",
     }
 
 
 # ============================================================
-# AI ASK
+# AI ASSISTANT
 # ============================================================
 
 @app.post("/api/ai/ask", response_model=AIResponse)
@@ -96,52 +155,38 @@ def ask_ai(request: AIRequest):
         answer = ask_grok(
             question=request.question,
             expression=request.expression,
-            result=request.result
+            result=request.result,
         )
 
         return AIResponse(
             success=True,
             question=request.question,
             answer=answer,
-            model="openai/gpt-oss-20b"
+            model="openai/gpt-oss-20b",
         )
 
     except Exception as error:
+        print("AI assistant error:", repr(error))
         raise HTTPException(
             status_code=500,
-            detail=f"AI Assistant error: {str(error)}"
+            detail="The AI assistant could not process the request.",
         )
 
 
-# ============================================================
-# AI EXPLANATION
-# ============================================================
-
 @app.post("/api/ai/explain")
-def explain_calculation(
-    expression: str,
-    result: str
-):
+def explain_calculation(expression: str, result: str):
     try:
         question = """
-Explain the following CloudCalc Pro calculation
-in a simple step-by-step way.
-
-Include:
-
-1. What the expression means
-2. The formula
-3. Step-by-step explanation
-4. Why the result is correct
-5. One practical example
-
+Explain this calculation in simple steps.
+Include its meaning, formula, calculation steps,
+why the result is correct, and one practical example.
 Do not change the supplied result.
 """
 
         answer = ask_grok(
             question=question,
             expression=expression,
-            result=result
+            result=result,
         )
 
         return {
@@ -149,106 +194,54 @@ Do not change the supplied result.
             "expression": expression,
             "result": result,
             "explanation": answer,
-            "model": "openai/gpt-oss-20b"
+            "model": "openai/gpt-oss-20b",
         }
 
     except Exception as error:
+        print("AI explanation error:", repr(error))
         raise HTTPException(
             status_code=500,
-            detail=f"AI explanation error: {str(error)}"
+            detail="The calculation explanation could not be generated.",
         )
 
 
 # ============================================================
-# SAVE CALCULATION HISTORY
+# SAVE HISTORY
 # ============================================================
 
 @app.post("/api/history")
 def save_history(
     data: dict,
-    authorization: str | None = Header(default=None)
+    authorization: str | None = Header(default=None),
 ):
-    try:
-        # ----------------------------------------------------
-        # Validate Authorization Header
-        # ----------------------------------------------------
+    user_id, token = get_verified_user(authorization)
 
-        if not authorization:
-            raise HTTPException(
-                status_code=401,
-                detail="Authorization token is required."
-            )
+    expression = data.get("expression")
+    result = data.get("result")
+    operation = data.get("operation") or "calculation"
 
-        if not authorization.startswith("Bearer "):
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid authorization format."
-            )
-
-        access_token = authorization.replace(
-            "Bearer ",
-            "",
-            1
-        ).strip()
-
-        if not access_token:
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid access token."
-            )
-
-        # ----------------------------------------------------
-        # Get Calculation Data
-        # ----------------------------------------------------
-
-        user_id = data.get("user_id")
-        expression = data.get("expression")
-        result = data.get("result")
-        operation = data.get("operation")
-
-        if not user_id:
-            raise HTTPException(
-                status_code=400,
-                detail="user_id is required."
-            )
-
-        if expression is None:
-            raise HTTPException(
-                status_code=400,
-                detail="expression is required."
-            )
-
-        if result is None:
-            raise HTTPException(
-                status_code=400,
-                detail="result is required."
-            )
-
-        # ----------------------------------------------------
-        # Create User Supabase Client
-        # ----------------------------------------------------
-
-        user_supabase = create_client(
-            SUPABASE_URL,
-            SUPABASE_KEY
+    if expression is None or not str(expression).strip():
+        raise HTTPException(
+            status_code=400,
+            detail="expression is required.",
         )
 
-        # Apply logged-in user's access token.
-        # This allows Supabase RLS policies to apply.
-        user_supabase.postgrest.auth(access_token)
+    if result is None:
+        raise HTTPException(
+            status_code=400,
+            detail="result is required.",
+        )
 
-        # ----------------------------------------------------
-        # Insert History Record
-        # ----------------------------------------------------
+    try:
+        client = get_database_client(token)
 
         response = (
-            user_supabase
-            .table("history")
+            client.table("history")
             .insert({
                 "user_id": user_id,
-                "expression": expression,
+                "expression": str(expression),
                 "result": str(result),
-                "operation": operation
+                "operation": str(operation),
             })
             .execute()
         )
@@ -256,80 +249,46 @@ def save_history(
         return {
             "success": True,
             "message": "Calculation saved successfully.",
-            "data": response.data or []
+            "data": response.data or [],
         }
 
-    except HTTPException:
-        raise
-
     except Exception as error:
+        print("History save failed:", repr(error))
         raise HTTPException(
             status_code=500,
-            detail=f"History save error: {str(error)}"
+            detail=(
+                "Could not save history. Check the history table, "
+                "database permissions, and Supabase configuration."
+            ),
         )
 
 
 # ============================================================
-# GET CALCULATION HISTORY
+# GET HISTORY
 # ============================================================
 
 @app.get("/api/history")
 def get_history(
     user_id: str,
-    authorization: str | None = Header(default=None)
+    authorization: str | None = Header(default=None),
 ):
-    try:
-        # ----------------------------------------------------
-        # Validate Authorization Header
-        # ----------------------------------------------------
+    authenticated_id, token = get_verified_user(authorization)
 
-        if not authorization:
-            raise HTTPException(
-                status_code=401,
-                detail="Authorization token is required."
-            )
-
-        if not authorization.startswith("Bearer "):
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid authorization format."
-            )
-
-        access_token = authorization.replace(
-            "Bearer ",
-            "",
-            1
-        ).strip()
-
-        if not access_token:
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid access token."
-            )
-
-        # ----------------------------------------------------
-        # Create User Supabase Client
-        # ----------------------------------------------------
-
-        user_supabase = create_client(
-            SUPABASE_URL,
-            SUPABASE_KEY
+    if user_id != authenticated_id:
+        raise HTTPException(
+            status_code=403,
+            detail="You cannot access another user's history.",
         )
 
-        # Apply logged-in user's access token.
-        user_supabase.postgrest.auth(access_token)
-
-        # ----------------------------------------------------
-        # Get History
-        # ----------------------------------------------------
+    try:
+        client = get_database_client(token)
 
         response = (
-            user_supabase
-            .table("history")
+            client.table("history")
             .select(
                 "id,user_id,expression,result,operation,created_at"
             )
-            .eq("user_id", user_id)
+            .eq("user_id", authenticated_id)
             .order("created_at", desc=True)
             .limit(100)
             .execute()
@@ -337,92 +296,56 @@ def get_history(
 
         return {
             "success": True,
-            "history": response.data or []
+            "history": response.data or [],
         }
 
-    except HTTPException:
-        raise
-
     except Exception as error:
+        print("History retrieval failed:", repr(error))
         raise HTTPException(
             status_code=500,
-            detail=f"History API error: {str(error)}"
+            detail="Could not retrieve calculation history.",
         )
 
 
 # ============================================================
-# DELETE HISTORY RECORD
+# DELETE HISTORY
 # ============================================================
 
 @app.delete("/api/history/{history_id}")
 def delete_history(
     history_id: int,
-    authorization: str | None = Header(default=None)
+    authorization: str | None = Header(default=None),
 ):
+    authenticated_id, token = get_verified_user(authorization)
+
     try:
-        # ----------------------------------------------------
-        # Validate Authorization Header
-        # ----------------------------------------------------
-
-        if not authorization:
-            raise HTTPException(
-                status_code=401,
-                detail="Authorization token is required."
-            )
-
-        if not authorization.startswith("Bearer "):
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid authorization format."
-            )
-
-        access_token = authorization.replace(
-            "Bearer ",
-            "",
-            1
-        ).strip()
-
-        if not access_token:
-            raise HTTPException(
-                status_code=401,
-                detail="Invalid access token."
-            )
-
-        # ----------------------------------------------------
-        # Create User Supabase Client
-        # ----------------------------------------------------
-
-        user_supabase = create_client(
-            SUPABASE_URL,
-            SUPABASE_KEY
-        )
-
-        # Apply logged-in user's access token.
-        user_supabase.postgrest.auth(access_token)
-
-        # ----------------------------------------------------
-        # Delete History Record
-        # ----------------------------------------------------
+        client = get_database_client(token)
 
         response = (
-            user_supabase
-            .table("history")
+            client.table("history")
             .delete()
             .eq("id", history_id)
+            .eq("user_id", authenticated_id)
             .execute()
         )
+
+        if not response.data:
+            raise HTTPException(
+                status_code=404,
+                detail="History record not found.",
+            )
 
         return {
             "success": True,
             "message": "History record deleted successfully.",
-            "data": response.data or []
+            "data": response.data,
         }
 
     except HTTPException:
         raise
-
     except Exception as error:
+        print("History deletion failed:", repr(error))
         raise HTTPException(
             status_code=500,
-            detail=f"History delete error: {str(error)}"
+            detail="Could not delete the history record.",
         )

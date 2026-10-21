@@ -1,23 +1,23 @@
+
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from backend.Assistaint.prompts import SYSTEM_PROMPT
+from Assistaint.prompts import SYSTEM_PROMPT
 
-
-load_dotenv()
-
+# Load the .env file from the CloudCalc-Pro root folder
+ROOT_ENV = Path(__file__).resolve().parents[2] / ".env"
+load_dotenv(ROOT_ENV)
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 
-
 if not GROQ_API_KEY:
     raise RuntimeError(
-        "GROQ_API_KEY is missing from the root .env file."
+        f"GROQ_API_KEY is missing. Checked: {ROOT_ENV}"
     )
-
 
 client = OpenAI(
     api_key=GROQ_API_KEY,
@@ -37,24 +37,19 @@ def ask_grok(
     user_prompt = question.strip()
 
     if expression or result:
-
-        user_prompt += """
+        user_prompt += f"""
 
 IMPORTANT CALCULATION CONTEXT
 -----------------------------
-
 Expression:
-{expression}
+{expression or "Not provided"}
 
 CloudCalc Result:
-{result}
+{result or "Not provided"}
 
 Use the supplied result as the authoritative result.
 Explain it instead of replacing it.
-""".format(
-            expression=expression or "Not provided",
-            result=result or "Not provided"
-        )
+"""
 
     response = client.responses.create(
         model=GROQ_MODEL,
@@ -65,8 +60,6 @@ Explain it instead of replacing it.
     answer = response.output_text
 
     if not answer:
-        raise RuntimeError(
-            "Groq returned an empty response."
-        )
+        raise RuntimeError("Groq returned an empty response.")
 
     return answer.strip()
